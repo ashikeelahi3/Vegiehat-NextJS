@@ -1,5 +1,7 @@
 "use client";
+import ProductModal from "@/components/ProductModel";
 import { products } from "./data"
+import { useState } from "react";
 
 type Product = {
   id: number;
@@ -14,6 +16,19 @@ const handleProductClick = (product: Product) => {
   console.log(product.name); // This will log the clicked product object to the console.
 } 
 export default function Input() {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="w-full min-h-96 flex flex-wrap justify-center gap-2">
@@ -34,6 +49,12 @@ export default function Input() {
           </div>
         ))}
       </div>
+
+      <ProductModal 
+        product={selectedProduct}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   )
 }
