@@ -11,7 +11,7 @@ export default function Teams() {
         {teams.map((member:any) => (
           <div
             key={member.id}
-            className="bg-white p-6 rounded-lg shadow-md flex items-center space-x-6"
+            className="bg-white p-1 py-6 rounded-lg shadow-md flex flex-col md:flex-row items-center space-x-6"
           >
             {/* Profile Image */}
             <img
