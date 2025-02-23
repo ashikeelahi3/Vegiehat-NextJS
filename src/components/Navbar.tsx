@@ -25,6 +25,7 @@ export default function Navbar() {
             <Link href="/app" className="hover:text-gray-600" onClick={() => setIsOpen(false)}>App</Link>
             <Link href="/teams" className="hover:text-gray-600" onClick={() => setIsOpen(false)}>Team</Link>
             <Link href="/report" className="hover:text-gray-600" onClick={() => setIsOpen(false)}>Report</Link>
+            <Link href="/input" className="hover:text-gray-600" onClick={() => setIsOpen(false)}>Input</Link>
           </div>
 
           <button
@@ -41,6 +42,7 @@ export default function Navbar() {
             <Link href="/app" className="hover:text-gray-600" onClick={() => setIsOpen(false)}>App</Link>
             <Link href="/teams" className="hover:text-gray-600" onClick={() => setIsOpen(false)}>Team</Link>
             <Link href="/report" className="hover:text-gray-600" onClick={() => setIsOpen(false)}>Report</Link>
+            <Link href="/input" className="hover:text-gray-600" onClick={() => setIsOpen(false)}>Input</Link>
           </div>
         )}
       </nav>
