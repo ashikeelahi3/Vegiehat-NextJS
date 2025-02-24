@@ -1,10 +1,12 @@
+import { useState } from 'react';
+
 type Product = {
   id: number;
   name: string;
   unit: string;
   img?: string;
-  purchaseOption ?: Array<string>;
-  categories ?: Array<string>;
+  purchaseOption?: Array<string>;
+  categories?: Array<string>;
 };
 
 interface ProductModalProps {
@@ -16,14 +18,35 @@ interface ProductModalProps {
 export default function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   if (!isOpen || !product) return null;
 
+  const [formData, setFormData] = useState({
+    price: '',
+    quantity: '',
+    option: product.purchaseOption?.[0] || '',
+    notes: ''
+  });
+
+  const handlePriceChange = (value: string) => {
+    const filteredValue = value.replace(/[^0-9.]/g, "");
+    setFormData(prev => ({
+      ...prev,
+      price: filteredValue
+    }));
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
     const data = {
       productId: product.id,
-      quantity: formData.get('quantity'),
-      option: formData.get('option'),
-      notes: formData.get('notes')
+      name: product.name,
+      ...formData
     };
     console.log('Form submitted:', data);
     // Here you can handle the form data as needed
@@ -43,7 +66,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
           </button>
         </div>
         
-        <div className="mb-4">
+        <div className="mb-4 flex justify-center w-full">
           <img 
             src={`./images/products/${product.img}`}
             alt={product.name}
@@ -56,6 +79,23 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
             <p><strong>Unit:</strong> {product.unit}</p>
             
             <div className="form-group">
+              <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+                Price:
+              </label>
+              <input
+                type="number"
+                id="price"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                min="1"
+                placeholder="Input Price"
+                required
+                className="mt-1 p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
+            </div>
+
+            <div className="form-group">
               <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">
                 Quantity:
               </label>
@@ -63,6 +103,8 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                 type="number"
                 id="quantity"
                 name="quantity"
+                value={formData.quantity}
+                onChange={handleChange}
                 min="1"
                 required
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -77,6 +119,8 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                 <select
                   id="option"
                   name="option"
+                  value={formData.option}
+                  onChange={handleChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 >
                   {product.purchaseOption.map((option) => (
@@ -95,6 +139,8 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
               <textarea
                 id="notes"
                 name="notes"
+                value={formData.notes}
+                onChange={handleChange}
                 rows={3}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               />
