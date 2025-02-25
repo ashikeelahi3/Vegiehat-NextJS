@@ -7,6 +7,7 @@ type Product = {
   img?: string;
   purchaseOption?: Array<string>;
   categories?: Array<string>;
+  onlineShops: Array<string>;
 };
 
 interface ProductModalProps {
@@ -20,25 +21,37 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
 
   const [formData, setFormData] = useState({
     price: '',
-    quantity: '',
-    option: product.purchaseOption?.[0] || '',
+    category: '',
+    otherCategory: '',
+    purchaseOption: '',
+    otherPurchaseOption: '',
+    shopType: '',
+    otherShopType: '', 
+    onlineShopName: '',
     notes: ''
   });
-
-  const handlePriceChange = (value: string) => {
-    const filteredValue = value.replace(/[^0-9.]/g, "");
-    setFormData(prev => ({
-      ...prev,
-      price: filteredValue
-    }));
-  };
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  
+    if (name === "price") {
+      // Allow numbers and single decimal point
+      let sanitizedValue = value.replace(/[^0-9.]/g, '');
+      
+      if(sanitizedValue.split(".").length > 2) {
+        return
+      }
+      setFormData(prev => ({
+        ...prev,
+        [name]: sanitizedValue
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -75,66 +88,176 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <p><strong>Unit:</strong> {product.unit}</p>
-            
+          <div className="space-y-2">            
             <div className="form-group">
               <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-                Price:
+                Price: per ({product.unit})
               </label>
               <input
-                type="number"
+                type="text"
                 id="price"
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
-                min="1"
                 placeholder="Input Price"
                 required
                 className="mt-1 p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">
-                Quantity:
+            {product.categories && 
+            (<div className="form-group">
+              <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+                Category:
               </label>
-              <input
-                type="number"
-                id="quantity"
-                name="quantity"
-                value={formData.quantity}
+              <select
+                id="category"
+                name="category"
+                value={formData.category}
                 onChange={handleChange}
-                min="1"
                 required
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              />
-            </div>
-
+              >
+                <option value="" disabled>Select Category</option>
+                {
+                  product.categories.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))
+                }
+              </select>
+              {formData.category === "Other" && (
+                <input
+                  type="text"
+                  id="other-category"
+                  name="otherCategory"
+                  value={formData.otherCategory}
+                  onChange={handleChange}
+                  placeholder="Other category"
+                  className="mt-1 p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                />
+              )}
+            </div>)}
+              
+            {/* ********************************************  */}
+            {/* ********* Product Purchase Option *********** */}
+            {/* ********************************************* */}  
             {product.purchaseOption && (
               <div className="form-group">
-                <label htmlFor="option" className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Purchase Option:
                 </label>
-                <select
-                  id="option"
-                  name="option"
-                  value={formData.option}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                >
+                <div className="flex gap-2">
                   {product.purchaseOption.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
+                    <div key={option}>
+                      <input
+                        type="radio"
+                        id={option}
+                        name="purchaseOption"
+                        value={option}
+                        checked={formData.purchaseOption === option}
+                        onChange={handleChange}
+                        className="hidden" // Hide the default radio button
+                      />
+                      <label
+                        htmlFor={option}
+                        className={`px-4 py-2 text-sm rounded-md cursor-pointer border
+                          ${formData.purchaseOption === option 
+                            ? 'bg-indigo-600 text-white border-indigo-600' 
+                            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                          }`}
+                      >
+                        {option}
+                      </label>
+                    </div>
                   ))}
-                </select>
+                </div>
+                {formData.purchaseOption === "Other" && (
+                  <input
+                    type="text"
+                    id="otherPurchaseOption"
+                    name="otherPurchaseOption"
+                    value={formData.otherPurchaseOption}
+                    onChange={handleChange}
+                    placeholder="Other otherPurchaseOption"
+                    className="mt-1 p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  />
+                )}
               </div>
             )}
 
+            {/* ********************************************  */}
+            {/* *********** Types of shop ******************* */}
+            {/* ********************************************* */}
+            <div className="form-group">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Shop Type:
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {["Online/Supershop", "Traditional-Shop", "other"].map((option) => (
+                  <div key={option}>
+                    <input
+                      type="radio"
+                      id={option}
+                      name="shopType"
+                      value={option}
+                      checked={formData.shopType === option}
+                      onChange={handleChange}
+                      className="hidden" // Hide the default radio button
+                    />
+                    <label
+                      htmlFor={option}
+                      className={`px-4 gap-1 py-2 text-sm rounded-md cursor-pointer border
+                        ${formData.shopType === option 
+                          ? 'bg-indigo-600 text-white border-indigo-600' 
+                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                        }`}
+                    >
+                      {option[0].toUpperCase()+option.slice(1)}
+                    </label>
+                  </div>
+                ))}
+              </div>
+
+              {/* ShopType Online */}
+              {formData.shopType === 'Online/Supershop' && (                
+                <select
+                  id="onlineShopName"
+                  name="onlineShopName"
+                  value={formData.onlineShopName}
+                  onChange={handleChange}
+                  aria-label="Select online shop name"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                >
+                  <option value="" disabled>Select Shop Name</option>
+                  {
+                    product.onlineShops.map((shop) => (
+                      <option key={shop} value={shop}>
+                        {shop}
+                      </option>
+                    ))
+                  }
+                </select>
+              )}  
+              {/* ShopType Others */}
+              {formData.shopType === "other" && (
+                <input
+                  type="text"
+                  id="otherShopType"
+                  name="otherShopType"
+                  value={formData.otherShopType}
+                  onChange={handleChange}
+                  placeholder="Other Shop Type"
+                  className="mt-1 p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                />
+              )}
+            </div>
+            
+
             <div className="form-group">
               <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
-                Notes:
+                Comment:
               </label>
               <textarea
                 id="notes"

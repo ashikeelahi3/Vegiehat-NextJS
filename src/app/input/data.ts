@@ -1,5 +1,6 @@
-
-
+const onlineShops = [
+  "Agora", "Ajkerdeal", "Amana big bazar", "Bangla shoppers", "Chaldal", "Daily Bazar", "Daily Shopping", "Daraz mart", "GOFRESH", "Grocery", "Jogaan", "Khaas Food", "Kintaini", "Meena bazar", "Meenaclick", "MudiiMart", "Othoba", "Paikaree.com.bd", "SobjiBazaar", "Shwapno", "Taja Bajar", "Unimart", "Uttara Kacha Bazaar"
+]
 
 export const products = [
   {
@@ -86,8 +87,10 @@ export const products = [
     unit: 'kg',
     img: "green_chilli.png",
   }
-]
+].map(product => ({
+  ...product,
+  onlineShops: [...onlineShops]
+}))
 
-export const onlineShops = [
-  "Agora", "Ajkerdeal", "Amana big bazar", "Bangla shoppers", "Chaldal", "Daily Bazar", "Daily Shopping", "Daraz mart", "GOFRESH", "Grocery", "Jogaan", "Khaas Food", "Kintaini", "Meena bazar", "Meenaclick", "MudiiMart", "Othoba", "Paikaree.com.bd", "SobjiBazaar", "Shwapno", "Taja Bajar", "Unimart", "Uttara Kacha Bazaar"
-]
+
+
