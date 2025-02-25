@@ -10,6 +10,7 @@ type Product = {
   img?: string;
   purchaseOption ?: Array<string>;
   categories ?: Array<string>;
+  onlineShops: Array<string>;
 };
 
 const handleProductClick = (product: Product) => {
@@ -57,4 +58,4 @@ export default function Input() {
       />
     </div>
   )
-}
+} 

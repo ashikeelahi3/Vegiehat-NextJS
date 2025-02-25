@@ -37,7 +37,7 @@ export default function Navbar() {
         </div>
 
         {isOpen && (
-          <div className="md:hidden flex flex-col space-y-4 mt-2 p-4 bg-white shadow-md">
+          <div className="md:hidden flex flex-col space-y-4 mt-2 p-4 bg-black shadow-md">
             <Link href="/" className="hover:text-gray-600" onClick={() => setIsOpen(false)}>Home</Link>
             <Link href="/app" className="hover:text-gray-600" onClick={() => setIsOpen(false)}>App</Link>
             <Link href="/teams" className="hover:text-gray-600" onClick={() => setIsOpen(false)}>Team</Link>
