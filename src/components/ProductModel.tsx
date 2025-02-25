@@ -30,27 +30,16 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
     onlineShopName: '',
     notes: ''
   });
-  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
   
     if (name === "price") {
-      // Allow numbers and single decimal point
       let sanitizedValue = value.replace(/[^0-9.]/g, '');
-      
-      if(sanitizedValue.split(".").length > 2) {
-        return
-      }
-      setFormData(prev => ({
-        ...prev,
-        [name]: sanitizedValue
-      }));
+      if(sanitizedValue.split(".").length > 2) return;
+      setFormData(prev => ({ ...prev, [name]: sanitizedValue }));
     } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
+      setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
 
@@ -62,97 +51,97 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
       ...formData
     };
     console.log('Form submitted:', data);
-    // Here you can handle the form data as needed
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto p-4">
-      <div className="bg-white rounded-lg max-w-md w-96 my-8"> {/* Added my-8 for vertical spacing */}
-        <div className="max-h-[90vh] overflow-y-auto"> {/* Added wrapper div with max-height and scroll */}
-          <div className="p-6"> {/* Moved padding to inner container */}
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">{product.name}</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4">
+        <div className="max-h-[90vh] overflow-y-auto scrollbar-hide">
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-semibold text-gray-900">{product.name}</h2>
               <button 
                 onClick={onClose}
-                className="text-gray-500 hover:text-gray-700"
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-150"
+                aria-label="Close dialog"
               >
-                ✕
+                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
             
-            <div className="mb-4 flex justify-center w-full">
-              <img 
-                src={`./images/products/${product.img}`}
-                alt={product.name}
-                className="w-1/4 h-auto rounded-md"
-              />
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">            
-                <div className="form-group">
-                  <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-                    Price: per ({product.unit})
-                  </label>
-                  <input
-                    type="text"
-                    id="price"
-                    name="price"
-                    value={formData.price}
-                    onChange={handleChange}
-                    placeholder="Input Price"
-                    required
-                    className="mt-1 p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            {product.img && (
+              <div className="mb-6 flex justify-center p-1">
+                  <img 
+                    src={`./images/products/${product.img}`}
+                    alt={product.name}
+                    className="w-1/3 h-auto object-contain rounded-md"
                   />
-                </div>
+              </div>
+            )}
 
-                {product.categories && 
-                (<div className="form-group">
-                  <label htmlFor="category" className="block text-sm font-medium text-gray-700">
-                    Category:
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
+                    Price per {product.unit} <span className="text-red-500">*</span>
                   </label>
-                  <select
-                    id="category"
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  >
-                    <option value="" disabled>Select Category</option>
-                    {
-                      product.categories.map((category) => (
-                        <option key={category} value={category}>
-                          {category}
-                        </option>
-                      ))
-                    }
-                  </select>
-                  {formData.category === "Other" && (
+                  <div className="relative">
                     <input
                       type="text"
-                      id="other-category"
-                      name="otherCategory"
-                      value={formData.otherCategory}
+                      id="price"
+                      name="price"
+                      value={formData.price}
                       onChange={handleChange}
-                      placeholder="Other category"
-                      className="mt-1 p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                      placeholder="Enter price"
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     />
-                  )}
-                </div>)}
-                  
-                {/* ********************************************  */}
-                {/* ********* Product Purchase Option *********** */}
-                {/* ********************************************* */}  
-                {product.purchaseOption && (
-                  <div className="form-group">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Purchase Option:
+                  </div>
+                </div>
+
+                {product.categories && (
+                  <div>
+                    <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+                      Category <span className="text-red-500">*</span>
                     </label>
-                    <div className="flex gap-2">
+                    <select
+                      id="category"
+                      name="category"
+                      value={formData.category}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJjdXJyZW50Q29sb3IiPjxwYXRoIGQ9Ik03LjQxIDguNTlTMTIgMTMuMTdsNC41OS00LjU4TDE4IDEwbC02IDYtNi02IDEuNDEtMS40MXoiLz48L3N2Zz4=')] bg-no-repeat bg-[right:1rem_center] bg-[length:1.5em] appearance-none"
+                    >
+                      <option value="" disabled>Select Category</option>
+                      {product.categories.map((category) => (
+                        <option key={category} value={category}>{category}</option>
+                      ))}
+                    </select>
+                    {formData.category === "Other" && (
+                      <input
+                        type="text"
+                        id="other-category"
+                        name="otherCategory"
+                        value={formData.otherCategory}
+                        onChange={handleChange}
+                        placeholder="Specify category"
+                        className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      />
+                    )}
+                  </div>
+                )}
+
+                {product.purchaseOption && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Purchase Option
+                    </label>
+                    <div className="flex flex-wrap gap-1 items-start justify-start">
                       {product.purchaseOption.map((option) => (
-                        <div key={option}>
+                        <div key={option} className=" min-w-[70px]">
                           <input
                             type="radio"
                             id={option}
@@ -160,15 +149,14 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                             value={option}
                             checked={formData.purchaseOption === option}
                             onChange={handleChange}
-                            className="hidden" // Hide the default radio button
+                            className="hidden"
                           />
                           <label
                             htmlFor={option}
-                            className={`px-4 py-2 text-sm rounded-md cursor-pointer border
+                            className={`w-full px-4 py-2 text-sm font-medium text-center rounded-lg border transition-all duration-200 cursor-pointer
                               ${formData.purchaseOption === option 
                                 ? 'bg-indigo-600 text-white border-indigo-600' 
-                                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                              }`}
+                                : 'bg-white text-gray-700 border-gray-300 hover:border-indigo-300'}`}
                           >
                             {option}
                           </label>
@@ -182,23 +170,20 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                         name="otherPurchaseOption"
                         value={formData.otherPurchaseOption}
                         onChange={handleChange}
-                        placeholder="Other otherPurchaseOption"
-                        className="mt-1 p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        placeholder="Specify purchase option"
+                        className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       />
                     )}
                   </div>
                 )}
 
-                {/* ********************************************  */}
-                {/* *********** Types of shop ******************* */}
-                {/* ********************************************* */}
-                <div className="form-group">
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Shop Type:
+                    Shop Type
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {["Online/Supershop", "Traditional-Shop", "other"].map((option) => (
-                      <div key={option}>
+                      <div key={option} className="min-w-[140px]">
                         <input
                           type="radio"
                           id={option}
@@ -206,23 +191,21 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                           value={option}
                           checked={formData.shopType === option}
                           onChange={handleChange}
-                          className="hidden" // Hide the default radio button
+                          className="hidden"
                         />
                         <label
                           htmlFor={option}
-                          className={`px-4 gap-1 py-2 text-sm rounded-md cursor-pointer border
+                          className={`w-full px-4 py-2 text-sm font-medium text-center rounded-lg border transition-all duration-200 cursor-pointer
                             ${formData.shopType === option 
                               ? 'bg-indigo-600 text-white border-indigo-600' 
-                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                            }`}
+                              : 'bg-white text-gray-700 border-gray-300 hover:border-indigo-300'}`}
                         >
-                          {option[0].toUpperCase()+option.slice(1)}
+                          {option.replace(/\b\w/g, l => l.toUpperCase())}
                         </label>
                       </div>
                     ))}
                   </div>
 
-                  {/* ShopType Online */}
                   {formData.shopType === 'Online/Supershop' && (                
                     <select
                       id="onlineShopName"
@@ -230,19 +213,15 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                       value={formData.onlineShopName}
                       onChange={handleChange}
                       aria-label="Select online shop name"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                      className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJjdXJyZW50Q29sb3IiPjxwYXRoIGQ9Ik07LjQxIDguNTlTMTIgMTMuMTdsNC41OS00LjU4TDE4IDEwbC02IDYtNi02IDEuNDEtMS40MXoiLz48L3N2Zz4=')] bg-no-repeat bg-[right:1rem_center] bg-[length:1.5em] appearance-none"
                     >
                       <option value="" disabled>Select Shop Name</option>
-                      {
-                        product.onlineShops.map((shop) => (
-                          <option key={shop} value={shop}>
-                            {shop}
-                          </option>
-                        ))
-                      }
+                      {product.onlineShops.map((shop) => (
+                        <option key={shop} value={shop}>{shop}</option>
+                      ))}
                     </select>
-                  )}  
-                  {/* ShopType Others */}
+                  )}
+
                   {formData.shopType === "other" && (
                     <input
                       type="text"
@@ -250,16 +229,15 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                       name="otherShopType"
                       value={formData.otherShopType}
                       onChange={handleChange}
-                      placeholder="Other Shop Type"
-                      className="mt-1 p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                      placeholder="Specify shop type"
+                      className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   )}
                 </div>
-                
 
-                <div className="form-group">
-                  <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
-                    Comment:
+                <div>
+                  <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-2">
+                    Comments
                   </label>
                   <textarea
                     id="notes"
@@ -267,22 +245,22 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                     value={formData.notes}
                     onChange={handleChange}
                     rows={3}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 min-h-[100px]"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-2 pt-4">
+              <div className="flex justify-end gap-3 pt-4">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                  className="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
+                  className="px-6 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   Submit
                 </button>

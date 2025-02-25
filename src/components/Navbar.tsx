@@ -9,15 +9,19 @@ export default function Navbar() {
   return (
     <>
       <header>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-start">
           <img src="./images/web/vegiehat-logo.png" alt="Logo" className="w-32 h-32" />
+          <div>
           <span className="text-xl font-bold ml-2">Vegiehat</span>
+          <hr />
+          <p>Empowering Communities for Fairer Markets</p>
+          </div>
         </div> 
       </header>
-        <nav className="bg-black text-white shadow-md p-4 border-b-[6px] border-orange-400">
+        <nav className="sticky top-0 z-40 bg-black text-white shadow-md p-4 border-b-[6px] border-orange-400">
         <div className="container mx-auto flex justify-between items-center">
           <Link href="/">
-            <span className="text-xl font-bold cursor-pointer">Brand</span>
+            <span className="text-xl font-bold cursor-pointer">VegieHat</span>
           </Link>
           
           <div className="hidden md:flex space-x-6">
