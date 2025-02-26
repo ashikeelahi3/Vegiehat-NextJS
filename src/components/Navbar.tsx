@@ -12,7 +12,7 @@ export default function Navbar() {
         <div className="flex items-center justify-start">
           <img src="./images/web/vegiehat-logo.png" alt="Logo" className="w-32 h-32" />
           <div>
-          <span className="text-xl font-bold ml-2">Vegiehat</span>
+          <span className="text-xl font-bold">VegieHat</span>
           <hr />
           <p>Empowering Communities for Fairer Markets</p>
           </div>
