@@ -38,6 +38,23 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
       let sanitizedValue = value.replace(/[^0-9.]/g, '');
       if(sanitizedValue.split(".").length > 2) return;
       setFormData(prev => ({ ...prev, [name]: sanitizedValue }));
+      //   category: '',
+      // otherCategory: '',
+      // purchaseOption: '',
+      // otherPurchaseOption: '',
+      // shopType: '',
+      // otherShopType: '', 
+      // onlineShopName: '',
+    } else if(name === "category") {
+      setFormData(prev => ({ ...prev, [name]: value, otherCategory: ""}));
+    } else if(name === "purchaseOption") {
+      setFormData(prev => ({ ...prev, [name]: value, otherPurchaseOption: ""}));
+    } else if(name === "shopType") {
+      setFormData(prev => ({ ...prev, [name]: value, otherShopType: "", onlineShopName: ""}));
+    } else if(name === "otherShopType") {
+      setFormData(prev => ({ ...prev, [name]: value, onlineShopName: ""}));
+    } else if(name === "onlineShopName") {
+      setFormData(prev => ({ ...prev, [name]: value, otherShopType: ""}));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
