@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { supabase } from '../../lib/supabase'
 
 type Product = {
   id: number;
@@ -19,6 +20,9 @@ interface ProductModalProps {
 export default function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   if (!isOpen || !product) return null;
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const [formData, setFormData] = useState({
     price: '',
     category: '',
@@ -38,13 +42,6 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
       let sanitizedValue = value.replace(/[^0-9.]/g, '');
       if(sanitizedValue.split(".").length > 2) return;
       setFormData(prev => ({ ...prev, [name]: sanitizedValue }));
-      //   category: '',
-      // otherCategory: '',
-      // purchaseOption: '',
-      // otherPurchaseOption: '',
-      // shopType: '',
-      // otherShopType: '', 
-      // onlineShopName: '',
     } else if(name === "category") {
       setFormData(prev => ({ ...prev, [name]: value, otherCategory: ""}));
     } else if(name === "purchaseOption") {
@@ -60,14 +57,40 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const data = {
-      productId: product.id,
-      name: product.name,
-      ...formData
-    };
-    console.log('Form submitted:', data);
+    try {
+      const { data, error } = await supabase
+      .from('price_entries')
+      .insert([
+        {
+          product_id: product.id,
+          product_name: product.name,
+          price: parseFloat(formData.price),
+          category: formData.category,
+          other_category: formData.otherCategory,
+          purchase_option: formData.purchaseOption,
+          other_purchase_option: formData.otherPurchaseOption,
+          shop_type: formData.shopType,
+          other_shop_type: formData.otherShopType,
+          online_shop_name: formData.onlineShopName,
+          notes: formData.notes
+        }
+      ])
+      .select();
+
+      if (error) {
+        console.error('Error inserting product:', error);
+        return;
+      }
+      
+      console.log('Data inserted successfully:', data);
+      onClose();
+    } catch (err) {
+      console.error('Error saving product:', err);
+      return;
+    }
+    console.log('Data inserted successfully:');
     onClose();
   };
 
@@ -277,10 +300,21 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  disabled={isSubmitting}
+                  className={`px-6 py-2 text-sm font-medium text-white rounded-lg transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+                    ${isSubmitting 
+                      ? 'bg-indigo-400 cursor-not-allowed' 
+                      : 'bg-indigo-600 hover:bg-indigo-700'
+                    }`}
                 >
-                  Submit
+                  {isSubmitting ? 'Submitting...' : 'Submit'}
                 </button>
+                {/* If there is error in submitting */}
+                {error && (
+                  <div className="mt-2 text-red-600 text-sm">
+                    {error}
+                  </div>
+                )}
               </div>
             </form>
           </div>
