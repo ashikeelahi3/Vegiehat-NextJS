@@ -90,8 +90,6 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
       console.error('Error saving product:', err);
       return;
     }
-    console.log('Data inserted successfully:');
-    onClose();
   };
 
   return (
