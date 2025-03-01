@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50 py-8 mx-0">
+    <div className="min-h-screen bg-gray-50 py-8 px-9">
       <div className="">
         <h1 className="text-2xl font-bold text-gray-900 mb-4">VEGIEHAT</h1>
         <p className="text-lg text-gray-700 mb-8">

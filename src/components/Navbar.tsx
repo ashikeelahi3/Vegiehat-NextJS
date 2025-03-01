@@ -10,21 +10,21 @@ export default function Navbar() {
   return (
     <>
       <header className="bg-white border-b">
-        <div className="container mx-auto px-4 py-2 flex items-center justify-start gap-4">
-          <img src="/images/web/vegiehat-logo.png" alt="Logo" className="w-24 h-24" />
+        <div className="container mx-auto px-4 py-1 flex items-center justify-start gap-4">
+          <img src="/images/web/vegiehat-logo.png" alt="Logo" className="w-20 h-20" />
           <div>
             <span className="text-xl font-bold text-gray-900">VegieHat</span>
-            <hr className="my-2" />
+            <hr className="my-1" />
             <p className="text-gray-600">Empowering Communities for Fairer Markets</p>
           </div>
         </div> 
       </header>
 
-      <nav className="sticky top-0 z-40 bg-black text-white shadow-md p-4 border-b-[6px] border-orange-400">
+      <nav className="sticky top-0 z-40 bg-black text-white shadow-md p-2 border-b-[6px] border-orange-400">
         <div className="container mx-auto flex justify-between items-center">
           {/* Hamburger Menu - Now on the left */}
           <button
-            className="md:hidden p-2 rounded-md text-white hover:text-orange-300 transition-colors"
+            className="md:hidden p-1 rounded-md text-white hover:text-orange-300 transition-colors"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}

@@ -1,6 +1,6 @@
 "use client";
 import ProductModal from "@/components/ProductModel";
-import { products } from "./data"
+import { products } from "../../Data/productData"
 import { useState } from "react";
 
 type Product = {

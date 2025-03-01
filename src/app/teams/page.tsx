@@ -1,6 +1,6 @@
 "use client";
 
-import teams from "./teamsData";
+import teams from "../../Data/teamsData";
 
 export default function Teams() {
   return (

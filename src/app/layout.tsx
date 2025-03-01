@@ -33,11 +33,11 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" className="h-full">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-full bg-gray-50`}>
-          <div className="min-h-screen flex flex-col">
+          <div className="min-h-screen max-w-[1070px] mx-auto flex flex-col">
             {/* Main Content */}
             <div className="flex-1">
               <Navbar />
-              <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              <main className="">
                 <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
                   {children}
                 </div>
@@ -45,9 +45,9 @@ export default function RootLayout({
             </div>
 
             {/* Footer */}
-            <footer className="bg-white border-t border-gray-200 mt-auto">
-              <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                <p className="text-center text-sm text-gray-500">
+            <footer className="bg-black border-t border-gray-500 mt-auto">
+              <div className="py-3">
+                <p className="text-center text-sm text-white">
                   © {new Date().getFullYear()} VegieHat. All rights reserved.
                 </p>
               </div>
