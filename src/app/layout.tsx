@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   title: "VegieHat",
   description: "Empowering Communities for Fairer Markets",
   icons: {
-    icon: '/favicon.png',
+    icon: '/favicon.ico',
   },
 };
 
