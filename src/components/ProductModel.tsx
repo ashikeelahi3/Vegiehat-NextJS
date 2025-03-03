@@ -13,11 +13,12 @@ type Product = {
 
 interface ProductModalProps {
   product: Product | null;
+  userInfo: any;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
+export default function ProductModal({ product, userInfo, isOpen, onClose }: ProductModalProps) {
   if (!isOpen || !product) return null;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -61,9 +62,12 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
     e.preventDefault();
     try {
       const { data, error } = await supabase
-      .from('price_entries')
+      .from('price_entries_2')
       .insert([
         {
+          user_email: userInfo.email,
+          district: userInfo.district,
+          upazilla: userInfo.upazilla,
           product_id: product.id,
           product_name: product.name,
           price: parseFloat(formData.price),
