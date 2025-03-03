@@ -16,6 +16,9 @@ type Product = {
 export default function Input() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [email, setEmail] = useState("")
+  const [district, setDistrict] = useState("")
+  const [upazilla, setUpazilla] = useState("")
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -30,6 +33,38 @@ export default function Input() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="container mx-auto max-w-7xl">
+        <div className="mb-8 space-y-4">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              placeholder="Enter your email"
+            />
+          </div>
+          <div>
+            <label htmlFor="district" className="block text-sm font-medium text-gray-700">District</label>
+            <input
+              type="text"
+              id="district"
+              name="district"
+              className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              placeholder="Enter your district"
+            />
+          </div>
+          <div>
+            <label htmlFor="upazilla" className="block text-sm font-medium text-gray-700">Upazilla</label>
+            <input
+              type="text"
+              id="upazilla"
+              name="upazilla"
+              className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              placeholder="Enter your upazilla"
+            />
+          </div>
+        </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Products</h1>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
