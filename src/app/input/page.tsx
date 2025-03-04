@@ -1,8 +1,11 @@
 "use client";
+
 import { useState, useRef, useEffect } from "react";
+import { useUser } from "@clerk/nextjs";
 import ProductModal from "@/components/ProductModel";
 import { products } from "../../Data/productData"
 import { Districts } from "@/Data/Upazilla";
+import { toast } from 'react-hot-toast';
 
 type Product = {
   id: number;
@@ -15,6 +18,7 @@ type Product = {
 };
 
 export default function Input() {
+  const { user, isLoaded } = useUser();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [email, setEmail] = useState('');
@@ -96,7 +100,32 @@ export default function Input() {
     }
   }, [district]);
 
+  useEffect(() => {
+    if (isLoaded && user) {
+      const userEmail = user.primaryEmailAddress?.emailAddress || '';
+      setEmail(userEmail);
+      localStorage.setItem('userEmail', userEmail);
+    } else if (!user) {
+      const storedEmail = localStorage.getItem('userEmail') || '';
+      setEmail(storedEmail);
+    }
+  }, [isLoaded, user]);
+
   const handleProductClick = (product: Product) => {
+    // Validate required fields
+    if (!email) {
+      toast.error('Please enter your email address');
+      return;
+    }
+    if (!district) {
+      toast.error('Please select your district');
+      return;
+    }
+    if (!upazilla) {
+      toast.error('Please select your upazilla');
+      return;
+    }
+
     setSelectedProduct(product);
     setIsModalOpen(true);
   };
@@ -234,19 +263,24 @@ export default function Input() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="container mx-auto max-w-7xl">
         <div className="mb-8 space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              value={email}
-              onChange={handleEmailChange}
-              className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              placeholder="Enter your email"
-            />
-          </div>
+          {/* Only show email input if user is not logged in */}
+          {!user && (
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                value={email}
+                onChange={handleEmailChange}
+                className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                placeholder="Enter your email"
+              />
+            </div>
+          )}
 
           <div className="relative">
             <label htmlFor="district" className="block text-sm font-medium text-gray-700">
@@ -336,38 +370,27 @@ export default function Input() {
             )}
           </div>
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Products</h1>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map(product => (
-            <div 
+
+        {/* Add product grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {products.map((product) => (
+            <div
               key={product.id}
-              role="button"
-              tabIndex={0}
               onClick={() => handleProductClick(product)}
-              onKeyDown={(e) => e.key === 'Enter' && handleProductClick(product)}
-              className="group relative bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 
-                         border-2 border-gray-200 hover:border-indigo-200 focus:outline-none focus:ring-2 
-                         focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer p-4 h-full flex flex-col"
+              className="bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer"
             >
-              <div className="flex-1 flex flex-col items-center">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4 text-center">
-                  {product.name}
-                </h2>
-                {product.img && (
-                  <div className="w-full p-4 bg-gray-50 rounded-lg flex items-center justify-center">
-                    <img 
-                      src={`./images/products/${product.img}`} 
-                      alt={product.name} 
-                      className="w-full max-w-[150px] h-32 object-contain object-center"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                      }}
-                    />
-                  </div>
-                )}
-                {!product.img && (
-                  <div className="w-full h-32 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
+              <div className="aspect-square relative mb-2">
+                {product.img ? (
+                  <img 
+                    src={`/images/products/${product.img}`} 
+                    alt={product.name} 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/images/placeholder.png';
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
                     <svg 
                       className="w-12 h-12" 
                       fill="none" 
@@ -384,20 +407,19 @@ export default function Input() {
                   </div>
                 )}
               </div>
-              <div className="mt-4 text-sm text-indigo-600 font-medium text-center">
-                Click to add information
-              </div>
+              <h3 className="text-sm font-medium text-gray-900">{product.name}</h3>
+              <p className="text-sm text-gray-500">{product.unit}</p>
             </div>
           ))}
         </div>
-      </div>
 
-      <ProductModal 
-        product={selectedProduct}
-        userInfo={{email: email, district: district, upazilla: upazilla}}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-      />
+        <ProductModal 
+          product={selectedProduct}
+          userInfo={{email, district, upazilla}}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+        />
+      </div>
     </div>
-  )
+  );
 }
