@@ -17,7 +17,7 @@
     "plotly.js-dist": "^3.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "webr": "^0.4.2"
+    "react-hot-toast": "^2.5.2"
   },
   "devDependencies": {
     "@types/node": "^20",

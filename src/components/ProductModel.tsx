@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase'
+import { toast } from 'react-hot-toast';
 
 type Product = {
   id: number;
@@ -60,39 +61,71 @@ export default function ProductModal({ product, userInfo, isOpen, onClose }: Pro
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+
     try {
+      // Validate required fields
+      if (!formData.price) {
+        toast.error('Price is required');
+        return;
+      }
+
+      if (product?.categories && !formData.category) {
+        toast.error('Category is required');
+        return;
+      }
+
       const { data, error } = await supabase
-      .from('price_entries_2')
-      .insert([
-        {
-          user_email: userInfo.email,
-          district: userInfo.district,
-          upazilla: userInfo.upazilla,
-          product_id: product.id,
-          product_name: product.name,
-          price: parseFloat(formData.price),
-          category: formData.category,
-          other_category: formData.otherCategory,
-          purchase_option: formData.purchaseOption,
-          other_purchase_option: formData.otherPurchaseOption,
-          shop_type: formData.shopType,
-          other_shop_type: formData.otherShopType,
-          online_shop_name: formData.onlineShopName,
-          notes: formData.notes
-        }
-      ])
-      .select();
+        .from('price_entries_2')
+        .insert([
+          {
+            user_email: userInfo.email,
+            district: userInfo.district,
+            upazilla: userInfo.upazilla,
+            product_id: product.id,
+            product_name: product.name,
+            price: parseFloat(formData.price),
+            category: formData.category,
+            other_category: formData.otherCategory,
+            purchase_option: formData.purchaseOption,
+            other_purchase_option: formData.otherPurchaseOption,
+            shop_type: formData.shopType,
+            other_shop_type: formData.otherShopType,
+            online_shop_name: formData.onlineShopName,
+            notes: formData.notes
+          }
+        ])
+        .select();
 
       if (error) {
+        setError(error.message);
+        toast.error('Failed to submit data. Please try again.');
         console.error('Error inserting product:', error);
         return;
       }
       
-      console.log('Data inserted successfully:', data);
+      toast.success('Data submitted successfully!');
+      // Reset form data
+      setFormData({
+        price: '',
+        category: '',
+        otherCategory: '',
+        purchaseOption: '',
+        otherPurchaseOption: '',
+        shopType: '',
+        otherShopType: '', 
+        onlineShopName: '',
+        notes: ''
+      });
       onClose();
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+      setError(errorMessage);
+      toast.error('Failed to submit data. Please try again.');
       console.error('Error saving product:', err);
-      return;
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -155,7 +188,7 @@ export default function ProductModal({ product, userInfo, isOpen, onClose }: Pro
                       value={formData.category}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJjdXJyZW50Q29sb3IiPjxwYXRoIGQ9Ik03LjQxIDguNTlTMTIgMTMuMTdsNC41OS00LjU4TDE4IDEwbC02IDYtNi02IDEuNDEtMS40MXoiLz48L3N2Zz4=')] bg-no-repeat bg-[right:1rem_center] bg-[length:1.5em] appearance-none"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJjdXJyZW50Q29sb3IiPjxwYXRoIGQ9Ik07LjQxIDguNTlTMTIgMTMuMTdsNC41OS00LjU4TDE4IDEwbC02IDYtNi02IDEuNDEtMS40MXoiLz48L3N2Zz4=')] bg-no-repeat bg-[right:1rem_center] bg-[length:1.5em] appearance-none"
                     >
                       <option value="" disabled>Select Category</option>
                       {product.categories.map((category) => (
