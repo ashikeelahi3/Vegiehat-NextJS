@@ -7,17 +7,15 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
 }
 
 @layer utilities {
@@ -29,4 +27,77 @@ body {
   .scrollbar-hide::-webkit-scrollbar {
     display: none;  /* Chrome, Safari and Opera */
   }
+}
+
+@keyframes bounce-short {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-5px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-3px);
+  }
+}
+
+.animate-bounce-short {
+  animation: bounce-short 1s ease-in-out;
+}
+
+/* Custom VegieHat Buttons */
+.btn-vegiehat-primary {
+  @apply bg-vegiehat-primary hover:bg-vegiehat-secondary text-white font-medium 
+  rounded-md transition-colors duration-200 shadow-sm hover:shadow
+  focus:outline-none focus:ring-2 focus:ring-vegiehat-primary focus:ring-offset-2;
+}
+
+.btn-vegiehat-outline {
+  @apply border-2 border-vegiehat-primary text-vegiehat-primary hover:bg-vegiehat-primary 
+  hover:text-white font-medium rounded-md transition-all duration-200 shadow-sm hover:shadow
+  focus:outline-none focus:ring-2 focus:ring-vegiehat-primary focus:ring-offset-2;
+}
+
+.btn-vegiehat-secondary {
+  @apply bg-vegiehat-accent hover:bg-vegiehat-secondary text-vegiehat-dark font-medium 
+  rounded-md transition-colors duration-200 shadow-sm hover:shadow hover:text-white
+  focus:outline-none focus:ring-2 focus:ring-vegiehat-accent focus:ring-offset-2;
+}
+
+/* Dark mode versions */
+.dark .btn-vegiehat-primary {
+  @apply bg-vegiehat-secondary hover:bg-vegiehat-accent text-gray-900 hover:text-gray-900
+  focus:ring-vegiehat-secondary focus:ring-offset-1 focus:ring-offset-gray-800;
+}
+
+.dark .btn-vegiehat-outline {
+  @apply border-vegiehat-secondary text-vegiehat-secondary hover:bg-vegiehat-secondary 
+  hover:text-gray-900 focus:ring-vegiehat-secondary focus:ring-offset-1 focus:ring-offset-gray-800;
+}
+
+.dark .btn-vegiehat-secondary {
+  @apply bg-vegiehat-accent hover:bg-vegiehat-light text-gray-900
+  focus:ring-vegiehat-accent focus:ring-offset-1 focus:ring-offset-gray-800;
+}
+
+/* Form inputs with consistent styling */
+.input-vegiehat {
+  @apply w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 
+  rounded-md shadow-sm text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500
+  focus:outline-none focus:ring-2 focus:ring-vegiehat-primary dark:focus:ring-vegiehat-secondary 
+  focus:border-transparent transition-colors duration-200;
+}
+
+.select-vegiehat {
+  @apply w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 
+  rounded-md shadow-sm text-gray-800 dark:text-white
+  focus:outline-none focus:ring-2 focus:ring-vegiehat-primary dark:focus:ring-vegiehat-secondary 
+  focus:border-transparent transition-colors duration-200;
+}
+
+.label-vegiehat {
+  @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1;
 }
