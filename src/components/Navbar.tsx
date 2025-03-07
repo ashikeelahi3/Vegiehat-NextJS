@@ -28,56 +28,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Define Clerk appearance based on current theme
-  const clerkAppearance = {
-    layout: {
-      helpPageUrl: "https://vegiehat.com/help",
-      logoPlacement: "inside",
-      logoImageUrl: "/images/web/vegiehat-logo.png",
-      showOptionalFields: false,
-      socialButtonsPlacement: "top",
-      socialButtonsVariant: "blockButton"
-    },
-    variables: theme === "dark" 
-      ? {
-          borderRadius: "0.5rem",
-          colorPrimary: "#3E885B",
-          colorBackground: "#1F2937",
-          colorInputBackground: "#111827",
-          colorAlphaShade: "rgba(62, 136, 91, 0.1)",
-          fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
-          colorText: "#F9FAFB",
-          colorTextSecondary: "#9CA3AF",
-          colorTextOnPrimaryBackground: "#111827",
-          colorDanger: "#EF4444",
-          colorSuccess: "#10B981"
-        }
-      : {
-          borderRadius: "0.5rem",
-          colorPrimary: "#1E5631",
-          colorBackground: "#FFFFFF",
-          colorInputBackground: "#F8FAF9",
-          colorAlphaShade: "rgba(30, 86, 49, 0.1)",
-          fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
-          colorTextSecondary: "#3E885B",
-          colorDanger: "#C1292E"
-        },
-    elements: theme === "dark" 
-      ? {
-          formButtonPrimary: "bg-vegiehat-primary hover:bg-vegiehat-secondary text-white",
-          socialButtonsBlockButton: "border border-gray-600 hover:bg-gray-700 text-white",
-          socialButtonsBlockButtonText: "font-medium text-white",
-          formFieldInput: "bg-gray-800 border-gray-700 text-white",
-          footerActionLink: "text-vegiehat-accent hover:text-vegiehat-accent/80",
-          identityPreviewEditButton: "text-vegiehat-accent"
-        }
-      : {
-          formButtonPrimary: "bg-vegiehat-primary hover:bg-vegiehat-secondary text-white",
-          socialButtonsBlockButton: "border border-gray-300 hover:bg-gray-100",
-          socialButtonsBlockButtonText: "font-medium text-gray-800"
-        }
-  };
-
   return (
     <>
       <header className={`bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 shadow-sm transition-all duration-300 ${scrolled ? 'py-2' : 'py-4'}`}>
@@ -127,12 +77,100 @@ export default function Navbar() {
             
             {mounted && (
               <SignedOut>
-                <SignInButton mode="modal" appearance={clerkAppearance}>
+                <SignInButton mode="modal" appearance={{
+                  layout: {
+                    helpPageUrl: "https://vegiehat.com/help",
+                    logoPlacement: "inside",
+                    logoImageUrl: "/images/web/vegiehat-logo.png",
+                    showOptionalFields: false,
+                    socialButtonsPlacement: "top",
+                    socialButtonsVariant: "blockButton"
+                  },
+                  variables: theme === "dark" 
+                    ? {
+                        borderRadius: "0.5rem",
+                        colorPrimary: "#3E885B",
+                        colorBackground: "#1F2937",
+                        colorInputBackground: "#111827",
+                        fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+                        colorText: "#F9FAFB",
+                        colorTextSecondary: "#9CA3AF",
+                        colorTextOnPrimaryBackground: "#111827",
+                        colorDanger: "#EF4444",
+                        colorSuccess: "#10B981"
+                      }
+                    : {
+                        borderRadius: "0.5rem",
+                        colorPrimary: "#1E5631",
+                        colorBackground: "#FFFFFF",
+                        colorInputBackground: "#F8FAF9",
+                        fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+                        colorTextSecondary: "#3E885B",
+                        colorDanger: "#C1292E"
+                      },
+                  elements: theme === "dark" 
+                    ? {
+                        formButtonPrimary: "bg-vegiehat-primary hover:bg-vegiehat-secondary text-white",
+                        socialButtonsBlockButton: "border border-gray-600 hover:bg-gray-700 text-white",
+                        socialButtonsBlockButtonText: "font-medium text-white",
+                        formFieldInput: "bg-gray-800 border-gray-700 text-white",
+                        footerActionLink: "text-vegiehat-accent hover:text-vegiehat-accent/80"
+                      }
+                    : {
+                        formButtonPrimary: "bg-vegiehat-primary hover:bg-vegiehat-secondary text-white",
+                        socialButtonsBlockButton: "border border-gray-300 hover:bg-gray-100",
+                        socialButtonsBlockButtonText: "font-medium text-gray-800"
+                      }
+                }}>
                   <button className="px-4 py-2 text-sm font-medium text-white bg-vegiehat-primary hover:bg-vegiehat-primary/90 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-white/30">
                     Sign In
                   </button>
                 </SignInButton>
-                <SignUpButton mode="modal" appearance={clerkAppearance}>
+                <SignUpButton mode="modal" appearance={{
+                  layout: {
+                    helpPageUrl: "https://vegiehat.com/help",
+                    logoPlacement: "inside",
+                    logoImageUrl: "/images/web/vegiehat-logo.png",
+                    showOptionalFields: false,
+                    socialButtonsPlacement: "top",
+                    socialButtonsVariant: "blockButton"
+                  },
+                  variables: theme === "dark" 
+                    ? {
+                        borderRadius: "0.5rem",
+                        colorPrimary: "#3E885B",
+                        colorBackground: "#1F2937",
+                        colorInputBackground: "#111827",
+                        fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+                        colorText: "#F9FAFB",
+                        colorTextSecondary: "#9CA3AF",
+                        colorTextOnPrimaryBackground: "#111827",
+                        colorDanger: "#EF4444",
+                        colorSuccess: "#10B981"
+                      }
+                    : {
+                        borderRadius: "0.5rem",
+                        colorPrimary: "#1E5631",
+                        colorBackground: "#FFFFFF",
+                        colorInputBackground: "#F8FAF9",
+                        fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+                        colorTextSecondary: "#3E885B",
+                        colorDanger: "#C1292E"
+                      },
+                  elements: theme === "dark" 
+                    ? {
+                        formButtonPrimary: "bg-vegiehat-primary hover:bg-vegiehat-secondary text-white",
+                        socialButtonsBlockButton: "border border-gray-600 hover:bg-gray-700 text-white",
+                        socialButtonsBlockButtonText: "font-medium text-white",
+                        formFieldInput: "bg-gray-800 border-gray-700 text-white",
+                        footerActionLink: "text-vegiehat-accent hover:text-vegiehat-accent/80"
+                      }
+                    : {
+                        formButtonPrimary: "bg-vegiehat-primary hover:bg-vegiehat-secondary text-white",
+                        socialButtonsBlockButton: "border border-gray-300 hover:bg-gray-100",
+                        socialButtonsBlockButtonText: "font-medium text-gray-800"
+                      }
+                }}>
                   <button className="px-4 py-2 text-sm font-medium text-white bg-vegiehat-secondary hover:bg-vegiehat-secondary/90 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-white/30">
                     Sign Up
                   </button>
@@ -143,17 +181,30 @@ export default function Navbar() {
               <UserButton 
                 appearance={{
                   elements: {
-                    avatarBox: "w-8 h-8"
+                    avatarBox: "w-8 h-8",
+                    userButtonPopoverCard: theme === "dark" ? "bg-gray-800 border border-gray-700" : "",
+                    userButtonPopoverActionButton: theme === "dark" ? "text-white hover:bg-gray-700 hover:text-white" : "",
+                    userButtonPopoverActionButtonText: theme === "dark" ? "text-white hover:text-white group-hover:text-white" : "",
+                    userButtonPopoverActionButtonIcon: theme === "dark" ? "text-gray-400 group-hover:text-white" : "",
+                    userButtonPopoverFooter: theme === "dark" ? "border-gray-700" : "",
+                    userPreviewMainIdentifier: theme === "dark" ? "text-white" : "",
+                    userPreviewSecondaryIdentifier: theme === "dark" ? "text-gray-300" : ""
                   },
                   variables: theme === "dark" 
                     ? {
                         colorPrimary: "#3E885B",
                         colorBackground: "#1F2937",
                         colorText: "#F9FAFB",
+                        colorTextSecondary: "#D1D5DB",
+                        colorInputBackground: "#111827",
+                        colorInputText: "#F9FAFB",
+                        colorDanger: "#EF4444",
+                        colorSuccess: "#10B981",
+                        colorWarning: "#F59E0B"
                       }
                     : {
                         colorPrimary: "#1E5631",
-                        colorBackground: "#FFFFFF",
+                        colorBackground: "#FFFFFF"
                       }
                 }}
               />
