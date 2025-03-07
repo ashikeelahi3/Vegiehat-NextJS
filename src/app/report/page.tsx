@@ -17,6 +17,7 @@ export default function Report() {
 
   return (
     <div>
+      This is a temporary page.
       <h1>Report Page</h1>
       <p>Email: {userEmail}</p>
     </div>
