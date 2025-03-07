@@ -6,6 +6,7 @@ import ProductModal from "@/components/ProductModel";
 import { products } from "../../Data/productData"
 import { Districts } from "@/Data/Upazilla";
 import { toast } from 'react-hot-toast';
+import { Search } from "lucide-react";
 
 type Product = {
   id: number;
@@ -112,20 +113,48 @@ export default function Input() {
   }, [isLoaded, user]);
 
   const handleProductClick = (product: Product) => {
-    // Validate required fields
+    // Collect all validation errors
+    const errors = [];
+    
     if (!email) {
-      toast.error('Please enter your email address');
-      return;
+      errors.push('Please enter your email address');
     }
+    
     if (!district) {
-      toast.error('Please select your district');
-      return;
+      errors.push('Please select your district');
     }
+    
     if (!upazilla) {
-      toast.error('Please select your upazilla');
+      errors.push('Please select your upazilla');
+    }
+    
+    // If there are errors, show them one by one with animation
+    if (errors.length > 0) {
+      // Show errors sequentially with a delay
+      errors.forEach((error, index) => {
+        setTimeout(() => {
+          toast.error(error, {
+            duration: 3000,
+            position: 'top-right',
+            // Custom styling for better visibility
+            style: {
+              background: '#FEE2E2',
+              color: '#991B1B',
+              padding: '16px',
+              border: '1px solid #F87171',
+              borderRadius: '8px',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+            },
+            // Add animation
+            icon: '❌',
+            // Custom animation
+            className: 'animate-bounce-short',
+          });
+        }, index * 500); // 500ms delay between each notification
+      });
       return;
     }
-
+    
     setSelectedProduct(product);
     setIsModalOpen(true);
   };
@@ -225,6 +254,7 @@ export default function Input() {
         }
         break;
       case 'Escape':
+      case 'Tab':
         setIsDistrictDropdownOpen(false);
         setSelectedIndex(-1);
         break;
@@ -253,6 +283,7 @@ export default function Input() {
         }
         break;
       case 'Escape':
+      case 'Tab':
         setIsUpazillaDropdownOpen(false);
         setUpazillaSelectedIndex(-1);
         break;
@@ -260,137 +291,153 @@ export default function Input() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-8 transition-colors duration-300">
       <div className="container mx-auto max-w-7xl">
-        <div className="mb-8 space-y-4">
-          {/* Only show email input if user is not logged in */}
-          {!user && (
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email
+        <div className="mb-8 bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transition-all duration-300">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Location Information</h2>
+          
+          <div className="space-y-6">
+            {/* Only show email input if user is not logged in */}
+            {!user && (
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  value={email}
+                  onChange={handleEmailChange}
+                  className="mt-1 p-3 block w-full rounded-lg border border-gray-300 dark:border-gray-600 
+                    shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
+                    bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-200"
+                  placeholder="Enter your email"
+                />
+              </div>
+            )}
+
+            <div className="relative">
+              <label htmlFor="district" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                District
               </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                required
-                value={email}
-                onChange={handleEmailChange}
-                className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                placeholder="Enter your email"
-              />
+              <div className="relative">
+                <input
+                  ref={districtInputRef}
+                  type="text"
+                  id="district"
+                  value={districtFilter}
+                  onChange={handleDistrictFilterChange}
+                  onFocus={() => setIsDistrictDropdownOpen(true)}
+                  onKeyDown={handleDistrictKeyDown}
+                  className="mt-1 p-3 pl-10 block w-full rounded-lg border border-gray-300 dark:border-gray-600 
+                    shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
+                    bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-200"
+                  placeholder="Search and select district..."
+                  autoComplete="off"
+                />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" size={18} />
+              </div>
+              
+              {isDistrictDropdownOpen && filteredDistricts.length > 0 && (
+                <div
+                  ref={dropdownRef}
+                  className="absolute z-20 w-full mt-1 bg-white dark:bg-gray-700 rounded-md shadow-lg 
+                    max-h-60 overflow-auto border border-gray-200 dark:border-gray-600 transition-all duration-200"
+                >
+                  {filteredDistricts.map((dist, index) => (
+                    <div
+                      key={dist.id}
+                      className={`px-4 py-2 cursor-pointer transition-colors duration-150 ${
+                        district === dist.name 
+                          ? 'bg-indigo-600 dark:bg-indigo-700 text-white dark:text-white font-medium' 
+                          : index === selectedIndex
+                          ? 'bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-100'
+                          : 'hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200'
+                      }`}
+                      onClick={() => handleDistrictSelect(dist.name)}
+                    >
+                      {dist.name}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
 
-          <div className="relative">
-            <label htmlFor="district" className="block text-sm font-medium text-gray-700">
-              District
-            </label>
-            <input
-              ref={districtInputRef}
-              type="text"
-              id="district"
-              value={districtFilter}
-              onChange={handleDistrictFilterChange}
-              onFocus={() => setIsDistrictDropdownOpen(true)}
-              onKeyDown={handleDistrictKeyDown}
-              className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm 
-                focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              placeholder="Search and select district..."
-              autoComplete="off"
-            />
-            {isDistrictDropdownOpen && filteredDistricts.length > 0 && (
-              <div
-                ref={dropdownRef}
-                className="absolute z-20 w-full mt-1 bg-white rounded-md shadow-lg 
-                  max-h-60 overflow-auto border border-gray-200"
-              >
-                {filteredDistricts.map((dist, index) => (
-                  <div
-                    key={dist.id}
-                    className={`px-4 py-2 cursor-pointer ${
-                      district === dist.name 
-                        ? 'bg-indigo-50 text-indigo-600' 
-                        : index === selectedIndex
-                        ? 'bg-gray-100'
-                        : 'hover:bg-gray-50'
-                    }`}
-                    onClick={() => handleDistrictSelect(dist.name)}
-                  >
-                    {dist.name}
-                  </div>
-                ))}
+            <div className="relative">
+              <label htmlFor="upazilla" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Upazilla
+              </label>
+              <div className="relative">
+                <input
+                  ref={upazillaInputRef}
+                  type="text"
+                  id="upazilla"
+                  value={upazillaFilter}
+                  onChange={handleUpazillaFilterChange}
+                  onFocus={() => district && setIsUpazillaDropdownOpen(true)}
+                  onKeyDown={handleUpazillaKeyDown}
+                  disabled={!district}
+                  className={`mt-1 p-3 pl-10 block w-full rounded-lg shadow-sm ${
+                    !district 
+                      ? 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
+                      : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
+                  } transition-colors duration-200`}
+                  placeholder={district ? "Search and select upazilla..." : "Select a district first"}
+                  autoComplete="off"
+                />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" size={18} />
               </div>
-            )}
-          </div>
-
-          <div className="relative">
-            <label htmlFor="upazilla" className="block text-sm font-medium text-gray-700">
-              Upazilla
-            </label>
-            <input
-              ref={upazillaInputRef}
-              type="text"
-              id="upazilla"
-              value={upazillaFilter}
-              onChange={handleUpazillaFilterChange}
-              onFocus={() => district && setIsUpazillaDropdownOpen(true)}
-              onKeyDown={handleUpazillaKeyDown}
-              disabled={!district}
-              className={`mt-1 p-2 block w-full rounded-md shadow-sm ${
-                !district 
-                  ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed' 
-                  : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'
-              } sm:text-sm`}
-              placeholder={district ? "Search and select upazilla..." : "Select a district first"}
-              autoComplete="off"
-            />
-            {isUpazillaDropdownOpen && district && availableUpazillas.length > 0 && (
-              <div
-                ref={upazillaDropdownRef}
-                className="absolute z-10 w-full mt-1 bg-white rounded-md shadow-lg 
-                  max-h-60 overflow-auto border border-gray-200"
-              >
-                {availableUpazillas.map((upz, index) => (
-                  <div
-                    key={upz}
-                    className={`px-4 py-2 cursor-pointer ${
-                      upazilla === upz 
-                        ? 'bg-indigo-50 text-indigo-600' 
-                        : index === upazillaSelectedIndex
-                        ? 'bg-gray-100'
-                        : 'hover:bg-gray-50'
-                    }`}
-                    onClick={() => handleUpazillaSelect(upz)}
-                  >
-                    {upz}
-                  </div>
-                ))}
-              </div>
-            )}
+              
+              {isUpazillaDropdownOpen && district && availableUpazillas.length > 0 && (
+                <div
+                  ref={upazillaDropdownRef}
+                  className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 rounded-md shadow-lg 
+                    max-h-60 overflow-auto border border-gray-200 dark:border-gray-600 transition-all duration-200"
+                >
+                  {availableUpazillas.map((upz, index) => (
+                    <div
+                      key={upz}
+                      className={`px-4 py-2 cursor-pointer transition-colors duration-150 ${
+                        upazilla === upz 
+                          ? 'bg-indigo-600 dark:bg-indigo-700 text-white dark:text-white font-medium' 
+                          : index === upazillaSelectedIndex
+                          ? 'bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-100'
+                          : 'hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200'
+                      }`}
+                      onClick={() => handleUpazillaSelect(upz)}
+                    >
+                      {upz}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Add product grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Select a Product</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
           {products.map((product) => (
             <div
               key={product.id}
               onClick={() => handleProductClick(product)}
-              className="bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer"
+              className="group bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md hover:shadow-lg dark:hover:shadow-gray-800/50 
+                transition-all duration-300 transform hover:-translate-y-1 cursor-pointer border border-gray-100 dark:border-gray-700"
             >
-              <div className="aspect-square relative mb-2">
+              <div className="aspect-square relative mb-3 overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-700">
                 {product.img ? (
                   <img 
                     src={`/images/products/${product.img}`} 
                     alt={product.name} 
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-contain p-2 transform group-hover:scale-105 transition-transform duration-300"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = '/images/placeholder.png';
                     }}
                   />
                 ) : (
-                  <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
+                  <div className="w-full h-full rounded-lg flex items-center justify-center text-gray-400 dark:text-gray-500">
                     <svg 
                       className="w-12 h-12" 
                       fill="none" 
@@ -407,8 +454,10 @@ export default function Input() {
                   </div>
                 )}
               </div>
-              <h3 className="text-sm font-medium text-gray-900">{product.name}</h3>
-              <p className="text-sm text-gray-500">{product.unit}</p>
+              <h3 className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
+                {product.name}
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{product.unit}</p>
             </div>
           ))}
         </div>

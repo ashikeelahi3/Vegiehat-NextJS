@@ -30,3 +30,22 @@ body {
     display: none;  /* Chrome, Safari and Opera */
   }
 }
+
+@keyframes bounce-short {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-5px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-3px);
+  }
+}
+
+.animate-bounce-short {
+  animation: bounce-short 1s ease-in-out;
+}

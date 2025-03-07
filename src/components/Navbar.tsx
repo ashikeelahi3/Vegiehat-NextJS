@@ -1,21 +1,29 @@
 "use client"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Moon, Sun } from "lucide-react";
 import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { useTheme } from "next-themes";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Only show theme toggle after mounting to prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <>
-      <header className="bg-white border-b">
+      <header className="bg-white dark:bg-gray-900 border-b dark:border-gray-700">
         <div className="container mx-auto px-4 py-1 flex items-center justify-start gap-4">
           <img src="/images/web/vegiehat-logo.png" alt="Logo" className="w-20 h-20" />
           <div>
-            <span className="text-xl font-bold text-gray-900">VegieHat</span>
-            <hr className="my-1" />
-            <p className="text-gray-600">Empowering Communities for Fairer Markets</p>
+            <span className="text-xl font-bold text-gray-900 dark:text-white">VegieHat</span>
+            <hr className="my-1 dark:border-gray-700" />
+            <p className="text-gray-600 dark:text-gray-400">Empowering Communities for Fairer Markets</p>
           </div>
         </div> 
       </header>
@@ -39,8 +47,19 @@ export default function Navbar() {
             <Link href="/input" className="text-white hover:text-orange-300 transition-colors" onClick={() => setIsOpen(false)}>Input</Link>
           </div>
 
-          {/* Auth Buttons */}
+          {/* Auth Buttons and Theme Toggle */}
           <div className="flex items-center space-x-4">
+            {/* Theme Toggle Button */}
+            {mounted && (
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="p-1 rounded-md text-white hover:text-orange-300 transition-colors"
+                aria-label="Toggle dark mode"
+              >
+                {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+              </button>
+            )}
+            
             <SignedOut>
               <SignInButton mode="modal">
                 <button className="px-4 py-2 text-sm font-medium text-white hover:text-orange-300 border border-white/20 rounded-md hover:border-orange-300 transition-colors">
@@ -73,6 +92,26 @@ export default function Navbar() {
             <Link href="/teams" className="text-white hover:text-orange-300 transition-colors" onClick={() => setIsOpen(false)}>Team</Link>
             <Link href="/report" className="text-white hover:text-orange-300 transition-colors" onClick={() => setIsOpen(false)}>Report</Link>
             <Link href="/input" className="text-white hover:text-orange-300 transition-colors" onClick={() => setIsOpen(false)}>Input</Link>
+            
+            {/* Theme Toggle in Mobile Menu */}
+            {mounted && (
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="flex items-center text-white hover:text-orange-300 transition-colors"
+              >
+                {theme === "dark" ? (
+                  <>
+                    <Sun size={20} className="mr-2" />
+                    <span>Light Mode</span>
+                  </>
+                ) : (
+                  <>
+                    <Moon size={20} className="mr-2" />
+                    <span>Dark Mode</span>
+                  </>
+                )}
+              </button>
+            )}
           </div>
         )}
       </nav>
