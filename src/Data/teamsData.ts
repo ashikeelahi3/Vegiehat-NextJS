@@ -52,7 +52,7 @@ const teams: any = [
       {
         id: 3,
         name: "LinkedIn",
-        url: "https://www.linkedin.com/in/ashikelahi3"
+        url: "https://www.linkedin.com/in/ashikeelahi3"
       }
     ],
     image: "ashik.jpg"
