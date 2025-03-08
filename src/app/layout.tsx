@@ -34,7 +34,7 @@ export default function RootLayout({
       <html lang="en" className="h-full" suppressHydrationWarning>
         <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased min-h-full bg-vegiehat-light dark:bg-gray-900`}>
           <ThemeProvider attribute="class">
-            <div className="min-h-screen max-w-7xl mx-auto px-4 sm:px-0 md:px-4 lg:px-8 flex flex-col">
+            <div className="min-h-screen max-w-7xl mx-auto sm:px-0 md:px-4 lg:px-8 flex flex-col">
               {/* Main Content */}
               <div className="flex-1">
                 <Navbar />
