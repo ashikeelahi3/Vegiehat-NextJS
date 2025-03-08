@@ -198,7 +198,7 @@ export default function ProductModal({ product, userInfo, isOpen, onClose }: Pro
               
               <div className="flex flex-wrap gap-1 items-start justify-start mb-2">
                 {product.categories.map((category) => (
-                  <div key={category} className="min-w-[70px]">
+                  <div key={category} className="mr-[1px] mb-3">
                     <input
                       type="radio"
                       id={category}
@@ -250,7 +250,7 @@ export default function ProductModal({ product, userInfo, isOpen, onClose }: Pro
               
               <div className="flex flex-wrap gap-1 items-start justify-start mb-2">
                 {product.purchaseOption.map((option) => (
-                  <div key={option} className="min-w-[70px]">
+                  <div key={option} className="mr-[1px] mb-3">
                     <input
                       type="radio"
                       id={option}
@@ -301,7 +301,7 @@ export default function ProductModal({ product, userInfo, isOpen, onClose }: Pro
             
             <div className="flex flex-wrap gap-1 items-start justify-start mb-2">
               {["Online/Supershop", "Traditional-Shop", "other"].map((option) => (
-                <div key={option} className="min-w-[70px]">
+                <div key={option} className="mr-[1px] mb-3">
                   <input
                     type="radio"
                     id={option}
