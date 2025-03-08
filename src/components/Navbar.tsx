@@ -44,10 +44,10 @@ export default function Navbar() {
       </header>
 
       <nav className={`sticky top-0 z-50 bg-gradient-to-r from-vegiehat-primary to-vegiehat-secondary dark:from-vegiehat-dark dark:to-vegiehat-primary shadow-md transition-all duration-300 ${scrolled ? 'shadow-lg' : 'shadow-md'}`}>
-        <div className="container mx-auto px-6 py-0 flex justify-between items-center">
+        <div className="container mx-auto px-3 md:pl-0  py-0 flex justify-between items-center">
           {/* Hamburger Menu */}
           <button
-            className="md:hidden p-2 rounded-md text-white hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-white/30"
+            className="md:hidden p-2 py-4 rounded-md text-white hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-white/30"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X size={20} /> : <Menu size={20} />}
