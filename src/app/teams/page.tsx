@@ -4,7 +4,7 @@ import teams from "../../Data/teamsData";
 
 export default function Teams() {
   return (
-    <div className="bg-white dark:bg-gray-900 p-6 transition-colors duration-300">
+    <div className="bg-white dark:bg-gray-900 p-3 md:p-6 transition-colors duration-300">
       <h1 className="text-3xl font-bold text-center mb-10 text-vegiehat-primary dark:text-vegiehat-accent">
         Meet Our Team
         <div className="w-24 h-1 bg-gradient-to-r from-vegiehat-primary to-vegiehat-secondary dark:from-vegiehat-secondary dark:to-vegiehat-accent mx-auto mt-2"></div>
@@ -49,7 +49,7 @@ export default function Teams() {
                   {/* Skills Card */}
                   {member.skills && 
                     (    
-                      <div className="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 flex-1 min-w-[300px]">
+                      <div className="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 flex-1 min-w-[240px]">
                         <div className="flex items-center mb-3">
                           <div className="w-8 h-8 rounded-full bg-vegiehat-accent dark:bg-vegiehat-secondary flex items-center justify-center mr-3">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -75,7 +75,7 @@ export default function Teams() {
                   {/* Hobby Card */}
                   {
                     member.hobbies && (
-                      <div className="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 flex-1 min-w-[300px]">
+                      <div className="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 flex-1 min-w-[240px]">
                         <div className="flex items-center mb-3">
                           <div className="w-8 h-8 rounded-full bg-vegiehat-pepper flex items-center justify-center mr-3">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -105,7 +105,7 @@ export default function Teams() {
                   {/* Social Links Card */}
                   {
                     member.social_links.length > 0 && (
-                      <div className="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 flex-1 min-w-[300px]">
+                      <div className="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 flex-1 min-w-[240px]">
                         <div className="flex items-center mb-3">
                           <div className="w-8 h-8 rounded-full bg-vegiehat-secondary dark:bg-vegiehat-accent flex items-center justify-center mr-3">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
