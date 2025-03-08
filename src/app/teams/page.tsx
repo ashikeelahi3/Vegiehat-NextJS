@@ -45,80 +45,92 @@ export default function Teams() {
                 />
 
                 {/* Information Cards */}
-                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="mt-6 flex flex-wrap gap-4">
                   {/* Skills Card */}
-                  <div className="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
-                    <div className="flex items-center mb-3">
-                      <div className="w-8 h-8 rounded-full bg-vegiehat-accent dark:bg-vegiehat-secondary flex items-center justify-center mr-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
+                  {member.skills && 
+                    (    
+                      <div className="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 flex-1 min-w-[300px]">
+                        <div className="flex items-center mb-3">
+                          <div className="w-8 h-8 rounded-full bg-vegiehat-accent dark:bg-vegiehat-secondary flex items-center justify-center mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                          </div>
+                          <h3 className="font-semibold text-vegiehat-primary dark:text-vegiehat-accent">Professional Skills</h3>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {member.skills.split(',').map((skill: string, idx: number) => (
+                            <span 
+                              key={idx}
+                              className="inline-block bg-vegiehat-light dark:bg-gray-700 text-vegiehat-primary dark:text-vegiehat-accent px-3 py-1 text-sm rounded-full"
+                            >
+                              {skill.trim()}
+                            </span>
+                          ))}
+                        </div>
                       </div>
-                      <h3 className="font-semibold text-vegiehat-primary dark:text-vegiehat-accent">Professional Skills</h3>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {member.skills.split(',').map((skill: string, idx: number) => (
-                        <span 
-                          key={idx}
-                          className="inline-block bg-vegiehat-light dark:bg-gray-700 text-vegiehat-primary dark:text-vegiehat-accent px-3 py-1 text-sm rounded-full"
-                        >
-                          {skill.trim()}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                    )
+                  }
 
                   {/* Hobby Card */}
-                  <div className="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
-                    <div className="flex items-center mb-3">
-                      <div className="w-8 h-8 rounded-full bg-vegiehat-pepper flex items-center justify-center mr-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                  {
+                    member.hobbies && (
+                      <div className="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 flex-1 min-w-[300px]">
+                        <div className="flex items-center mb-3">
+                          <div className="w-8 h-8 rounded-full bg-vegiehat-pepper flex items-center justify-center mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                          </div>
+                          <h3 className="font-semibold text-vegiehat-primary dark:text-vegiehat-accent">Hobbies & Interests</h3>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {member.hobbies ? (
+                            member.hobbies.split(',').map((hobby: string, idx: number) => (
+                              <span 
+                                key={idx}
+                                className="inline-block bg-vegiehat-light/50 dark:bg-gray-700/50 text-vegiehat-dark dark:text-vegiehat-light px-3 py-1 text-sm rounded-full"
+                              >
+                                {hobby.trim()}
+                              </span>
+                            ))
+                          ) : (
+                            <span className="text-gray-500 dark:text-gray-400 text-sm italic">Information not available</span>
+                          )}
+                        </div>
                       </div>
-                      <h3 className="font-semibold text-vegiehat-primary dark:text-vegiehat-accent">Hobbies & Interests</h3>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {member.hobbies ? (
-                        member.hobbies.split(',').map((hobby: string, idx: number) => (
-                          <span 
-                            key={idx}
-                            className="inline-block bg-vegiehat-light/50 dark:bg-gray-700/50 text-vegiehat-dark dark:text-vegiehat-light px-3 py-1 text-sm rounded-full"
-                          >
-                            {hobby.trim()}
-                          </span>
-                        ))
-                      ) : (
-                        <span className="text-gray-500 dark:text-gray-400 text-sm italic">Information not available</span>
-                      )}
-                    </div>
-                  </div>
+                    )
+                  }
                   
                   {/* Social Links Card */}
-                  <div className="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 md:col-span-2">
-                    <div className="flex items-center mb-3">
-                      <div className="w-8 h-8 rounded-full bg-vegiehat-secondary dark:bg-vegiehat-accent flex items-center justify-center mr-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                        </svg>
+                  {
+                    member.social_links.length > 0 && (
+                      <div className="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 flex-1 min-w-[300px]">
+                        <div className="flex items-center mb-3">
+                          <div className="w-8 h-8 rounded-full bg-vegiehat-secondary dark:bg-vegiehat-accent flex items-center justify-center mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                            </svg>
+                          </div>
+                          <h3 className="font-semibold text-vegiehat-primary dark:text-vegiehat-accent">Connect With {member.name.split(' ')[0]}</h3>
+                        </div>
+                        <div className="flex flex-wrap gap-3">
+                          {member.social_links.map((link: { id: string; url: string; name: string }) => (
+                            <a
+                              key={link.id}
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center px-4 py-2 bg-vegiehat-light dark:bg-gray-700 hover:bg-vegiehat-primary hover:text-white dark:hover:bg-vegiehat-accent dark:hover:text-gray-900 rounded-md transition-colors"
+                            >
+                              {getSocialIcon(link.name)}
+                              <span className="ml-2">{link.name}</span>
+                            </a>
+                          ))}
+                        </div>
                       </div>
-                      <h3 className="font-semibold text-vegiehat-primary dark:text-vegiehat-accent">Connect With {member.name.split(' ')[0]}</h3>
-                    </div>
-                    <div className="flex flex-wrap gap-3">
-                      {member.social_links.map((link: { id: string; url: string; name: string }) => (
-                        <a
-                          key={link.id}
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center px-4 py-2 bg-vegiehat-light dark:bg-gray-700 hover:bg-vegiehat-primary hover:text-white dark:hover:bg-vegiehat-accent dark:hover:text-gray-900 rounded-md transition-colors"
-                        >
-                          {getSocialIcon(link.name)}
-                          <span className="ml-2">{link.name}</span>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
+                    )
+                  }
                 </div>
               </div>
             </div>
