@@ -170,13 +170,13 @@ export default function Input() {
     localStorage.setItem('userEmail', value);
   };
 
-  const handleDistrictChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDistrict(e.target.value);
-  };
+  // const handleDistrictChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setDistrict(e.target.value);
+  // };
 
-  const handleUpazillaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUpazilla(e.target.value);
-  };
+  // const handleUpazillaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setUpazilla(e.target.value);
+  // };
 
   const handleDistrictFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const filterValue = e.target.value;
@@ -379,7 +379,7 @@ export default function Input() {
                   onFocus={() => district && setIsUpazillaDropdownOpen(true)}
                   onKeyDown={handleUpazillaKeyDown}
                   disabled={!district}
-                  className={`mt-1 p-3 pl-10 block w-full rounded-lg shadow-sm ${
+                  className={`mt-1 p-3 pl-10 block w-full border border-gray-300 rounded-lg shadow-sm ${
                     !district 
                       ? 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
                       : 'border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
