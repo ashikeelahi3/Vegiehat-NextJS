@@ -1,11 +1,6 @@
-export type DistrictType = {
-  id: number;
-  name: string;
-  division: string;
-  upazilla: string[];
-};
+import { District } from "@/types/location";
 
-export const Districts: DistrictType[] = [
+export const Districts: District[] = [
   // Chattogram Division
   {
     id: 1,

@@ -3,23 +3,10 @@
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase'
 import { toast } from 'react-hot-toast';
+import { ProductModalProps } from '@/types/product';
 
-type Product = {
-  id: number;
-  name: string;
-  unit: string;
-  img?: string;
-  purchaseOption?: Array<string>;
-  categories?: Array<string>;
-  onlineShops: Array<string>;
-};
 
-interface ProductModalProps {
-  product: Product | null;
-  userInfo: any;
-  isOpen: boolean;
-  onClose: () => void;
-}
+
 
 export default function ProductModal({ product, userInfo, isOpen, onClose }: ProductModalProps) {
   if (!isOpen || !product) return null;

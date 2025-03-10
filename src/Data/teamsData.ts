@@ -1,4 +1,6 @@
-const teams: any = [
+import { TeamMember } from '../types/team'
+
+const teams: TeamMember[] = [
   { 
     id: 1,
     name: "Ahmed Ar RAFI",

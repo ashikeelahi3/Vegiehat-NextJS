@@ -1,5 +1,6 @@
 "use client";
 
+import { SocialLink, TeamMember } from "@/types/team";
 import teams from "../../Data/teamsData";
 
 export default function Teams() {
@@ -11,7 +12,7 @@ export default function Teams() {
       </h1>
 
       <div className="max-w-5xl mx-auto space-y-12">
-        {teams.map((member: any) => (
+        {teams.map((member: TeamMember) => (
           <div
             key={member.id}
             className="bg-vegiehat-light dark:bg-gray-800 overflow-hidden rounded-xl shadow-md transition-all duration-300 hover:shadow-lg border border-transparent hover:border-vegiehat-accent/20 dark:hover:border-vegiehat-secondary/20"
@@ -104,7 +105,7 @@ export default function Teams() {
                   
                   {/* Social Links Card */}
                   {
-                    member.social_links.length > 0 && (
+                    member.social_links && member.social_links.length > 0 && (
                       <div className="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700 flex-1 min-w-[240px]">
                         <div className="flex items-center mb-3">
                           <div className="w-8 h-8 rounded-full bg-vegiehat-secondary dark:bg-vegiehat-accent flex items-center justify-center mr-3">
@@ -115,7 +116,8 @@ export default function Teams() {
                           <h3 className="font-semibold text-vegiehat-primary dark:text-vegiehat-accent">Connect With {member.name.split(' ')[0]}</h3>
                         </div>
                         <div className="flex flex-wrap gap-3">
-                          {member.social_links.map((link: { id: string; url: string; name: string }) => (
+                          {
+                          member.social_links.map((link: SocialLink) => (
                             <a
                               key={link.id}
                               href={link.url}
