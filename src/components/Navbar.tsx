@@ -56,10 +56,10 @@ export default function Navbar() {
           {/* Desktop Navigation Links with Borders */}
           <div className="hidden md:flex space-x-0 items-center">
             <Link href="/" className="text-white text-sm font-medium hover:bg-vegiehat-pepper hover:text-vegiehat-dark px-4 py-4 transition-colors border-l border-r border-white/10" onClick={() => setIsOpen(false)}>Home</Link>
-            <Link href="/app" className="text-white text-sm font-medium hover:bg-vegiehat-pepper hover:text-vegiehat-dark px-4 py-4 transition-colors border-r border-white/10" onClick={() => setIsOpen(false)}>App</Link>
+            {/* <Link href="/app" className="text-white text-sm font-medium hover:bg-vegiehat-pepper hover:text-vegiehat-dark px-4 py-4 transition-colors border-r border-white/10" onClick={() => setIsOpen(false)}>App</Link> */}
+            <Link href="/input" className="text-white text-sm font-medium hover:bg-vegiehat-pepper hover:text-vegiehat-dark px-4 py-4 transition-colors border-r border-white/10" onClick={() => setIsOpen(false)}>Input</Link>
             <Link href="/teams" className="text-white text-sm font-medium hover:bg-vegiehat-pepper hover:text-vegiehat-dark px-4 py-4 transition-colors border-r border-white/10" onClick={() => setIsOpen(false)}>Team</Link>
             <Link href="/report" className="text-white text-sm font-medium hover:bg-vegiehat-pepper hover:text-vegiehat-dark px-4 py-4 transition-colors border-r border-white/10" onClick={() => setIsOpen(false)}>Report</Link>
-            <Link href="/input" className="text-white text-sm font-medium hover:bg-vegiehat-pepper hover:text-vegiehat-dark px-4 py-4 transition-colors border-r border-white/10" onClick={() => setIsOpen(false)}>Input</Link>
           </div>
 
           {/* Auth Buttons and Theme Toggle */}
@@ -216,10 +216,10 @@ export default function Navbar() {
         {isOpen && (
           <div className="md:hidden flex flex-col mt-1 bg-vegiehat-dark/95 backdrop-blur-sm dark:bg-gray-900/95 border-t border-white/10">
             <Link href="/" className="text-white hover:bg-vegiehat-pepper hover:text-vegiehat-dark px-6 py-3 transition-colors border-b border-white/10" onClick={() => setIsOpen(false)}>Home</Link>
-            <Link href="/app" className="text-white hover:bg-vegiehat-pepper hover:text-vegiehat-dark px-6 py-3 transition-colors border-b border-white/10" onClick={() => setIsOpen(false)}>App</Link>
+            {/* <Link href="/app" className="text-white hover:bg-vegiehat-pepper hover:text-vegiehat-dark px-6 py-3 transition-colors border-b border-white/10" onClick={() => setIsOpen(false)}>App</Link> */}
+            <Link href="/input" className="text-white hover:bg-vegiehat-pepper hover:text-vegiehat-dark px-6 py-3 transition-colors border-b border-white/10" onClick={() => setIsOpen(false)}>Input</Link>
             <Link href="/teams" className="text-white hover:bg-vegiehat-pepper hover:text-vegiehat-dark px-6 py-3 transition-colors border-b border-white/10" onClick={() => setIsOpen(false)}>Team</Link>
             <Link href="/report" className="text-white hover:bg-vegiehat-pepper hover:text-vegiehat-dark px-6 py-3 transition-colors border-b border-white/10" onClick={() => setIsOpen(false)}>Report</Link>
-            <Link href="/input" className="text-white hover:bg-vegiehat-pepper hover:text-vegiehat-dark px-6 py-3 transition-colors border-b border-white/10" onClick={() => setIsOpen(false)}>Input</Link>
             
             {/* Theme Toggle in Mobile Menu */}
             {mounted && (
