@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
-import ProductModal from "@/components/ProductModel";
+import ProductModal from "@/components/ProductModal";
 import { products } from "../../Data/productData"
 import { Districts } from "@/Data/Upazilla";
 import { toast } from 'react-hot-toast';
