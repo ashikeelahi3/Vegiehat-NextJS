@@ -17,7 +17,11 @@ const CHART_COLORS = [
   { color: '#f59e0b', hoverColor: '#d97706' }, // amber-500, amber-600
   { color: '#10b981', hoverColor: '#059669' }, // emerald-500, emerald-600
   { color: '#06b6d4', hoverColor: '#0891b2' }, // cyan-500, cyan-600
-  { color: '#6366f1', hoverColor: '#4f46e5' }  // indigo-500, indigo-600
+  { color: '#6366f1', hoverColor: '#4f46e5' }, // indigo-500, indigo-600
+  { color: '#84cc16', hoverColor: '#65a30d' }, // lime-500, lime-600
+  { color: '#14b8a6', hoverColor: '#0d9488' }, // teal-500, teal-600
+  { color: '#f472b6', hoverColor: '#db2777' }, // pink-400, pink-600
+  { color: '#9333ea', hoverColor: '#7e22ce' }  // purple-600, purple-700
 ];
 
 // These classes are predefined in Tailwind and safe from purging
@@ -32,12 +36,16 @@ const PRODUCT_BUTTON_CLASSES = {
     amber: "bg-amber-100 border-amber-300 text-amber-800 dark:bg-amber-900/30 dark:border-amber-700 dark:text-amber-300",
     emerald: "bg-emerald-100 border-emerald-300 text-emerald-800 dark:bg-emerald-900/30 dark:border-emerald-700 dark:text-emerald-300",
     cyan: "bg-cyan-100 border-cyan-300 text-cyan-800 dark:bg-cyan-900/30 dark:border-cyan-700 dark:text-cyan-300",
-    indigo: "bg-indigo-100 border-indigo-300 text-indigo-800 dark:bg-indigo-900/30 dark:border-indigo-700 dark:text-indigo-300"
+    indigo: "bg-indigo-100 border-indigo-300 text-indigo-800 dark:bg-indigo-900/30 dark:border-indigo-700 dark:text-indigo-300",
+    lime: "bg-lime-100 border-lime-300 text-lime-800 dark:bg-lime-900/30 dark:border-lime-700 dark:text-lime-300",
+    teal: "bg-teal-100 border-teal-300 text-teal-800 dark:bg-teal-900/30 dark:border-teal-700 dark:text-teal-300",
+    fuchsia: "bg-fuchsia-100 border-fuchsia-300 text-fuchsia-800 dark:bg-fuchsia-900/30 dark:border-fuchsia-700 dark:text-fuchsia-300",
+    purple: "bg-purple-100 border-purple-300 text-purple-800 dark:bg-purple-900/30 dark:border-purple-700 dark:text-purple-300"
   }
 };
 
 // Define corresponding color names for the active classes
-const COLOR_NAMES = ['blue', 'violet', 'pink', 'red', 'amber', 'emerald', 'cyan', 'indigo'];
+const COLOR_NAMES = ['blue', 'violet', 'pink', 'red', 'amber', 'emerald', 'cyan', 'indigo', 'lime', 'teal', 'fuchsia', 'purple'];
 
 /**
  * Get available products from the database
@@ -175,12 +183,42 @@ export default function PriceTrendsChart() {
   const [chartData, setChartData] = useState<any[]>([]);
   const [isChartLoading, setIsChartLoading] = useState(false);
   
+  // Initialize with top 5 products selected
+  // Define the PriceStats type
+  type PriceStats = {
+    productName: string;
+    dataCount?: number; // Optional to avoid errors if it's sometimes missing
+    // Add other properties as necessary
+  };
+
+  useEffect(() => {
+    if (stats.length > 0 && selectedProducts.length === 0) {
+      // Sort products by data count (assuming more inputs means more important)
+      const sortedStats = [...(stats as PriceStats[])].sort((a, b) =>
+        (b.dataCount || 0) - (a.dataCount || 0)
+      );
+
+      // Select top 5 or fewer if less than 5 are available
+      const topProducts = sortedStats.slice(0, 5).map(product => product.productName);
+      setSelectedProducts(topProducts);
+    }
+  }, [stats, selectedProducts.length]);
+  
   const toggleProduct = (productName: string) => {
     setSelectedProducts(prev => 
       prev.includes(productName)
         ? prev.filter(p => p !== productName)
         : [...prev, productName]
     );
+  };
+  
+  // Add select/deselect all functionality
+  const toggleAllProducts = () => {
+    if (selectedProducts.length === stats.length) {
+      setSelectedProducts([]);
+    } else {
+      setSelectedProducts(stats.map(product => product.productName));
+    }
   };
   
   // Fetch time series data when selection changes
@@ -214,24 +252,33 @@ export default function PriceTrendsChart() {
   
   // Process time series data into a format suitable for the chart
   const processTimeSeriesForChart = (data: PriceDataPoint[]) => {
-    // Group data by date
-    const dateGroups: Record<string, Record<string, number>> = {};
-    
+    // Create a map of all dates and initialize with null values for all products
+    const dateGroups: Record<string, Record<string, number | null>> = {};
+    const products = new Set(data.map(point => point.product));
+  
+    // First pass: collect all unique dates
     data.forEach(point => {
       if (!dateGroups[point.date]) {
         dateGroups[point.date] = {};
+        // Initialize all products with null for this date
+        products.forEach(product => {
+          dateGroups[point.date][product] = null;
+        });
       }
-      
-      // If multiple entries for same product on same date, take average
-      if (dateGroups[point.date][point.product]) {
+    });
+  
+    // Second pass: fill in actual values
+    data.forEach(point => {
+      if (dateGroups[point.date][point.product] !== null) {
+        // If there's already a value, take average
         dateGroups[point.date][point.product] = 
-          (dateGroups[point.date][point.product] + point.price) / 2;
+          ((dateGroups[point.date][point.product] as number) + point.price) / 2;
       } else {
         dateGroups[point.date][point.product] = point.price;
       }
     });
-    
-    // Convert to array format for recharts
+  
+    // Convert to array and sort by date
     return Object.entries(dateGroups)
       .map(([date, products]) => ({
         date,
@@ -266,11 +313,23 @@ export default function PriceTrendsChart() {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
       <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-        Price Trends Over Time
+         Price Trends Over Time
       </h2>
       
+      <div className="flex justify-between items-center mb-2">
+        <span className="text-sm text-gray-600 dark:text-gray-400">
+          {selectedProducts.length} of {stats.length} products selected
+        </span>
+        <button
+          onClick={toggleAllProducts}
+          className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+        >
+          {selectedProducts.length === stats.length ? 'Deselect All' : 'Select All'}
+        </button>
+      </div>
+      
       <div className="mb-4 flex flex-wrap gap-2">
-        {stats.slice(0, 8).map((product, index) => (
+        {stats.map((product, index) => (
           <button
             key={product.productName}
             onClick={() => toggleProduct(product.productName)}
@@ -281,7 +340,7 @@ export default function PriceTrendsChart() {
         ))}
       </div>
       
-      <div className="h-64">
+      <div className="h-96"> {/* Increased height from h-64 to h-96 */}
         {isChartLoading ? (
           <div className="flex items-center justify-center h-full">
             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
@@ -300,25 +359,33 @@ export default function PriceTrendsChart() {
                   const d = new Date(date);
                   return `${d.getDate()}/${d.getMonth() + 1}`;
                 }}
+                height={50}
+                interval="preserveStartEnd"
+                minTickGap={20}
               />
               <YAxis 
                 tick={{ fontSize: 12 }}
                 tickFormatter={(value) => `৳${value}`}
+                width={60}
               />
               <Tooltip 
                 formatter={(value: any) => [`৳${Number(value).toFixed(2)}`, '']}
                 labelFormatter={(label: any) => new Date(label).toLocaleDateString()}
+                isAnimationActive={false}
+                wrapperStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', border: '1px solid #ccc', borderRadius: '4px', padding: '8px' }}
               />
-              <Legend />
+              <Legend wrapperStyle={{ paddingTop: 10 }} />
               {selectedProducts.map((product, index) => (
                 <Line
                   key={product}
                   type="monotone"
                   dataKey={product}
                   stroke={CHART_COLORS[index % CHART_COLORS.length].color}
-                  activeDot={{ r: 8 }}
+                  activeDot={{ r: 6 }}
                   strokeWidth={2}
                   name={product}
+                  connectNulls={true}
+                  dot={{ strokeWidth: 1, r: 3 }}
                 />
               ))}
             </LineChart>
@@ -331,4 +398,4 @@ export default function PriceTrendsChart() {
       </div>
     </div>
   );
-} 
+}
