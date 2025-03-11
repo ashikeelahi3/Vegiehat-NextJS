@@ -9,6 +9,7 @@ import PriceAnalyticsGrid from "./PriceAnalyticsGrid";
 import PriceTrendsChart from "./PriceTrendsChart";
 import RegionalComparison from "./RegionalComparison";
 import ExportData from "./ExportData";
+import DistrictReport from "./CoverageMap/DistrictReport";
 
 export default function ReportDashboard() {
   const { 
@@ -50,6 +51,8 @@ export default function ReportDashboard() {
       <PriceAnalyticsGrid />
       
       <RegionalComparison />
+
+      <DistrictReport />
     </div>
   );
 } 
