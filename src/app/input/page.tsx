@@ -2,21 +2,13 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
-import ProductModal from "@/components/ProductModel";
+import ProductModal from "@/components/ProductModal";
 import { products } from "../../Data/productData"
 import { Districts } from "@/Data/Upazilla";
 import { toast } from 'react-hot-toast';
 import { Search } from "lucide-react";
+import { Product } from '../../types/product';
 
-type Product = {
-  id: number;
-  name: string;
-  unit: string;
-  img?: string;
-  purchaseOption?: Array<string>;
-  categories?: Array<string>;
-  onlineShops: Array<string>;
-};
 
 export default function Input() {
   const { user, isLoaded } = useUser();
@@ -170,13 +162,7 @@ export default function Input() {
     localStorage.setItem('userEmail', value);
   };
 
-  // const handleDistrictChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setDistrict(e.target.value);
-  // };
-
-  // const handleUpazillaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setUpazilla(e.target.value);
-  // };
+  
 
   const handleDistrictFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const filterValue = e.target.value;
