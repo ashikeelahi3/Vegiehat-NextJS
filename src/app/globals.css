@@ -138,7 +138,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 9999;
+  z-index: 20 !important; /* Lower than navbar's z-index */
   background: white;
 }
 
@@ -187,4 +187,21 @@ body {
 .fullscreen-map .leaflet-control-container {
   position: absolute;
   z-index: 1000;
+}
+
+/* Ensure map stays below navbar */
+.leaflet-container,
+.leaflet-pane,
+.leaflet-top,
+.leaflet-bottom,
+.leaflet-control,
+.leaflet-control-container,
+.leaflet-control-zoom,
+.map-container {
+  z-index: 20 !important; /* Lower than navbar's z-index of 50 */
+}
+
+/* Fix scrolling behavior to prevent map from overlapping navbar */
+body.has-fullscreen-map {
+  overflow: hidden;
 }
