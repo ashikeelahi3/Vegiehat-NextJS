@@ -33,6 +33,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
   const mapRef = useRef<L.Map | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [activeFeature, setActiveFeature] = useState<any>(null);
   
   // Set Bangladesh center coordinates
   const position: [number, number] = [23.8103, 90.4125];
@@ -45,6 +46,8 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
         containerRef.current.requestFullscreen()
           .then(() => {
             setIsFullScreen(true);
+            // Add class to body to prevent scrolling
+            document.body.classList.add('has-fullscreen-map');
             // Invalidate map size after entering fullscreen and reposition controls
             setTimeout(() => {
               if (mapRef.current) {
@@ -67,6 +70,8 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
         document.exitFullscreen()
           .then(() => {
             setIsFullScreen(false);
+            // Remove class from body to restore scrolling
+            document.body.classList.remove('has-fullscreen-map');
             // Invalidate map size after exiting fullscreen
             setTimeout(() => {
               mapRef.current?.invalidateSize();
@@ -120,6 +125,9 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
         return div;
       };
       zoomInfo.addTo(mapRef.current);
+      
+      // Remove focus outline from the map container
+      mapRef.current.getContainer().style.outline = 'none';
     }
   }, []);
 
@@ -130,8 +138,12 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
       fillColor: isSelected ? '#3b82f6' : '#86efac',
       weight: isSelected ? 2 : 1,
       opacity: 1,
-      color: 'white',
+      color: isSelected ? '#1e40af' : 'white', // Change border color for selected district
       fillOpacity: isSelected ? 0.7 : 0.5,
+      // Remove default focus styles
+      interactive: true, 
+      bubblingMouseEvents: false,
+      className: 'district-path'
     };
   };
 
@@ -146,8 +158,18 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
       layer.bindTooltip(districtName, {
         permanent: false,
         direction: 'center',
-        className: 'bg-white px-2 py-1 rounded shadow-sm text-sm'
+        className: 'bg-white px-2 py-1 shadow-sm text-sm'
       });
+    }
+    
+    // Remove the default focus rectangle
+    const pathLayer = layer as L.Path;
+    if (pathLayer.getElement) {
+      const pathElement = pathLayer.getElement();
+      if (pathElement) {
+        pathElement.setAttribute('tabindex', '-1'); // Remove from tab order
+        (pathElement as HTMLElement).style.outline = 'none'; // Remove outline
+      }
     }
     
     // Add click handler
@@ -155,6 +177,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
       click: () => {
         if (districtName) {
           onDistrictClick(districtName);
+          setActiveFeature(feature); // Track which feature was clicked
         }
       },
       mouseover: (e) => {
@@ -185,10 +208,12 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
         ref={mapRef}
         minZoom={6}
         maxZoom={12}
-        scrollWheelZoom={true} // Enable scroll wheel zoom
-        zoomControl={true} // Show default zoom controls
+        scrollWheelZoom={true}
+        zoomControl={true}
         attributionControl={true}
         doubleClickZoom={true}
+        // Remove focus styling
+        className="outline-none focus:outline-none"
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -198,6 +223,8 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
           data={districtData}
           style={districtStyle}
           onEachFeature={onEachDistrict}
+          // Remove focus styles
+          pathOptions={{ className: 'outline-none focus:outline-none' }}
         />
       </MapContainer>
       
@@ -231,6 +258,46 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
           </p>
         </div>
       )}
+
+      {/* Add this CSS to fix z-index and focus issues */}
+      <style jsx global>{`
+        .leaflet-container {
+          outline: none !important;
+          z-index: 20 !important; /* Lower than navbar */
+        }
+        
+        .leaflet-interactive {
+          outline: none !important;
+        }
+        
+        /* Remove focus rectangles from SVG paths */
+        path.district-path {
+          outline: none !important;
+          box-shadow: none !important;
+        }
+        
+        /* Fix for Firefox focus styles */
+        .leaflet-container:focus,
+        .leaflet-container *:focus {
+          outline: none !important;
+          box-shadow: none !important;
+        }
+        
+        /* Fix for z-index issues */
+        .leaflet-pane {
+          z-index: 10 !important;
+        }
+        
+        .leaflet-top, 
+        .leaflet-bottom {
+          z-index: 20 !important;
+        }
+        
+        /* This is crucial - set map control z-index lower than navbar */
+        .leaflet-control {
+          z-index: 30 !important;
+        }
+      `}</style>
     </div>
   );
 };
