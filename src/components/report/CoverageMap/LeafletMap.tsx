@@ -228,10 +228,10 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
         />
       </MapContainer>
       
-      {/* Standalone fullscreen button - positioned away from zoom controls */}
+      {/* Standalone fullscreen button - positioned in top right corner */}
       <button
         onClick={toggleFullScreen}
-        className="absolute top-4 right-16 z-30 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-md shadow-md"
+        className="absolute top-4 right-4 z-30 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-md shadow-md"
         title={isFullScreen ? "Exit fullscreen" : "Enter fullscreen"}
         aria-label={isFullScreen ? "Exit fullscreen" : "Enter fullscreen"}
       >
