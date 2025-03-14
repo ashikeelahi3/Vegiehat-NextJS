@@ -5,6 +5,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --map-z-index: 40;
+  --modal-z-index: 9999;
+  --navbar-z-index: 50;
 }
 
 .dark {
@@ -157,7 +160,7 @@ body {
 
 /* Make sure controls remain visible in fullscreen */
 .fullscreen-map .leaflet-control-container {
-  z-index: 1000 !important;
+  z-index: 61!important;
 }
 
 /* Position controls properly */
@@ -186,7 +189,7 @@ body {
 /* Fix for iOS devices when in fullscreen mode */
 .fullscreen-map .leaflet-control-container {
   position: absolute;
-  z-index: 1000;
+  z-index: 61
 }
 
 /* Ensure map stays below navbar */
@@ -204,4 +207,38 @@ body {
 /* Fix scrolling behavior to prevent map from overlapping navbar */
 body.has-fullscreen-map {
   overflow: hidden;
+}
+
+/* Ensure modal appears above maps, even in fullscreen */
+.fullscreen-map-report {
+  z-index: 1000 !important;
+}
+
+/* Make sure the modal content is visible above the map */
+.fullscreen-map-report > div {
+  z-index: 1001 !important;
+}
+
+/* Add to your global CSS file */
+
+/* Portal container for modals to appear above everything else */
+#modal-root {
+  position: relative;
+  z-index: 9999;
+}
+
+/* Global override for fullscreen map and modal interactions */
+.fixed, 
+[role="dialog"],
+.modal,
+.dialog,
+.popup {
+  z-index: var(--modal-z-index) !important;
+}
+
+/* Make sure modals are always visible */
+@media (display-mode: fullscreen) {
+  .fullscreen-map-report {
+    z-index: 10000 !important;
+  }
 }

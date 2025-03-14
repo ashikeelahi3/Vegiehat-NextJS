@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { MapContainer, GeoJSON, TileLayer, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { X } from 'lucide-react';
+import DistrictReportContent from './DistrictReportContent';
 
 // Fix for Leaflet default icon in Next.js
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -33,26 +35,21 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
   const mapRef = useRef<L.Map | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [activeFeature, setActiveFeature] = useState<any>(null);
-  
-  // Set Bangladesh center coordinates
+  const [isDistrictModalOpen, setIsDistrictModalOpen] = useState(false);
+  const [activeDistrict, setActiveDistrict] = useState<string | null>(null);
+
   const position: [number, number] = [23.8103, 90.4125];
-  
-  // Function to toggle fullscreen
+
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
-      // Enter fullscreen
       if (containerRef.current?.requestFullscreen) {
         containerRef.current.requestFullscreen()
           .then(() => {
             setIsFullScreen(true);
-            // Add class to body to prevent scrolling
             document.body.classList.add('has-fullscreen-map');
-            // Invalidate map size after entering fullscreen and reposition controls
             setTimeout(() => {
               if (mapRef.current) {
                 mapRef.current.invalidateSize();
-                // Ensure zoom controls are visible
                 const zoomControl = document.querySelector('.leaflet-control-zoom');
                 if (zoomControl) {
                   (zoomControl as HTMLElement).style.display = 'block';
@@ -65,14 +62,11 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
           });
       }
     } else {
-      // Exit fullscreen
       if (document.exitFullscreen) {
         document.exitFullscreen()
           .then(() => {
             setIsFullScreen(false);
-            // Remove class from body to restore scrolling
             document.body.classList.remove('has-fullscreen-map');
-            // Invalidate map size after exiting fullscreen
             setTimeout(() => {
               mapRef.current?.invalidateSize();
             }, 100);
@@ -83,77 +77,61 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
       }
     }
   };
-  
-  // Listen for fullscreenchange event
+
+  const handleDistrictClick = (districtName: string) => {
+    setActiveDistrict(districtName);
+    setIsDistrictModalOpen(true);
+  };
+
+  const closeDistrictModal = () => {
+    setIsDistrictModalOpen(false);
+  };
+
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullScreen(!!document.fullscreenElement);
-      // Invalidate map size when fullscreen changes
       setTimeout(() => {
         mapRef.current?.invalidateSize();
       }, 100);
     };
-    
+
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     return () => {
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
     };
   }, []);
-  
+
   useEffect(() => {
-    // Fit map to Bangladesh bounds when component mounts
     if (mapRef.current) {
       mapRef.current.fitBounds([
-        [20.7, 88.0], // Southwest coordinates
-        [26.6, 92.7]  // Northeast coordinates
+        [20.7, 88.0],
+        [26.6, 92.7]
       ]);
-      
-      // Set min/max zoom constraints after map is initialized
-      mapRef.current.setMinZoom(6);  // Prevent zooming out too far
-      mapRef.current.setMaxZoom(12); // Allow more zoom for details
-      
-      // Enable scroll wheel zoom by default
+      mapRef.current.setMinZoom(6);
+      mapRef.current.setMaxZoom(12);
       mapRef.current.scrollWheelZoom.enable();
-      
-      // Add a info tooltip about zooming
-      const zoomInfo = new L.Control({ position: 'bottomleft' });
-      zoomInfo.onAdd = () => {
-        const div = L.DomUtil.create('div', 'leaflet-control leaflet-bar');
-        div.innerHTML = `<div class="bg-white dark:bg-gray-800 px-3 py-2 rounded-md text-xs text-gray-600 dark:text-gray-300 shadow-sm">
-          <strong>Tip:</strong> Use scroll wheel to zoom
-        </div>`;
-        return div;
-      };
-      zoomInfo.addTo(mapRef.current);
-      
-      // Remove focus outline from the map container
-      mapRef.current.getContainer().style.outline = 'none';
     }
   }, []);
 
-  // Style function for the districts
   const districtStyle = (feature: any) => {
     const isSelected = selectedDistrict === feature.properties?.NAME_2;
     return {
       fillColor: isSelected ? '#3b82f6' : '#86efac',
       weight: isSelected ? 2 : 1,
       opacity: 1,
-      color: isSelected ? '#1e40af' : 'white', // Change border color for selected district
+      color: isSelected ? '#1e40af' : 'white',
       fillOpacity: isSelected ? 0.7 : 0.5,
-      // Remove default focus styles
-      interactive: true, 
+      interactive: true,
       bubblingMouseEvents: false,
       className: 'district-path'
     };
   };
 
-  // Handle each district feature
   const onEachDistrict = (feature: any, layer: L.Layer) => {
     if (!feature.properties) return;
-    
+
     const districtName = feature.properties.NAME_2 || feature.properties.name_en || '';
-    
-    // Add tooltip with district name
+
     if (districtName) {
       layer.bindTooltip(districtName, {
         permanent: false,
@@ -161,23 +139,11 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
         className: 'bg-white px-2 py-1 shadow-sm text-sm'
       });
     }
-    
-    // Remove the default focus rectangle
-    const pathLayer = layer as L.Path;
-    if (pathLayer.getElement) {
-      const pathElement = pathLayer.getElement();
-      if (pathElement) {
-        pathElement.setAttribute('tabindex', '-1'); // Remove from tab order
-        (pathElement as HTMLElement).style.outline = 'none'; // Remove outline
-      }
-    }
-    
-    // Add click handler
+
     layer.on({
       click: () => {
         if (districtName) {
-          onDistrictClick(districtName);
-          setActiveFeature(feature); // Track which feature was clicked
+          handleDistrictClick(districtName);
         }
       },
       mouseover: (e) => {
@@ -212,7 +178,6 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
         zoomControl={true}
         attributionControl={true}
         doubleClickZoom={true}
-        // Remove focus styling
         className="outline-none focus:outline-none"
       >
         <TileLayer
@@ -223,7 +188,6 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
           data={districtData}
           style={districtStyle}
           onEachFeature={onEachDistrict}
-          // Remove focus styles
           pathOptions={{ className: 'outline-none focus:outline-none' }}
         />
       </MapContainer>
@@ -259,7 +223,40 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
         </div>
       )}
 
-      {/* Add this CSS to fix z-index and focus issues */}
+      {/* District Report Modal - with higher z-index */}
+      {isDistrictModalOpen && (
+        <div className="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/70 z-[1000] fullscreen-map-report flex items-center justify-center p-0">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full h-full sm:w-auto sm:h-auto sm:max-w-5xl sm:max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                {activeDistrict} District Price Data
+              </h3>
+              <button 
+                onClick={closeDistrictModal}
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+              >
+                <X className="w-5 h-5" />
+                <span className="sr-only">Close</span>
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6">
+              <DistrictReportContent 
+                districtName={activeDistrict}
+                inModal={true}
+              />
+            </div>
+            <div className="border-t border-gray-200 dark:border-gray-700 p-4 flex justify-end">
+              <button
+                onClick={closeDistrictModal}
+                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-md text-gray-800 dark:text-gray-200 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <style jsx global>{`
         .leaflet-container {
           outline: none !important;
@@ -296,6 +293,45 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
         /* This is crucial - set map control z-index lower than navbar */
         .leaflet-control {
           z-index: 30 !important;
+        }
+        
+        /* Make sure the fullscreen map is below modals */
+        .fullscreen-map {
+          position: fixed !important;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 40 !important;
+          background: white;
+        }
+        
+        /* Ensure the modal always appears above EVERYTHING */
+        .fixed {
+          z-index: 9999 !important;
+        }
+        
+        /* Specific class for the district modal */
+        .fullscreen-map-report {
+          z-index: 9999 !important;
+          position: fixed !important;
+        }
+        
+        /* Override any other z-index that might interfere */
+        #__next {
+          z-index: auto !important;
+        }
+        
+        /* Ensure body doesn't hide modals */
+        body.has-fullscreen-map::before {
+          content: "";
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 9000;
+          pointer-events: none;
         }
       `}</style>
     </div>
