@@ -85,10 +85,10 @@ export default function ReportDashboard() {
         </div>
       </div>
 
-      {/* District Report Modal */}
+      {/* District Report Modal - with higher z-index */}
       {isDistrictModalOpen && (
-        <div className="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/70 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
+        <div className="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/70 z-[1000] fullscreen-map-report flex items-center justify-center p-0">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full h-full sm:w-auto sm:h-auto sm:max-w-5xl sm:max-h-[90vh] overflow-hidden flex flex-col">
             <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                 {selectedDistrict} District Price Data
